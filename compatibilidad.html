@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Comprobador de compatibilidad de emulación Android con catálogo de procesadores, benchmarks de referencia y enriquecimiento online.">
+<title>Compatibilidad de emulación — AndroidEmu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap nav">
+<a class="logo" href="index.html">Android<span>Emu</span></a>
+<nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a><a href="compatibilidad.html">Compatibilidad</a></nav>
+</div></header>
+
+<main class="wrap article">
+<a class="back" href="index.html">← Volver a AndroidEmu</a>
+<p class="eyebrow">COMPROBADOR INTELIGENTE</p>
+<h1>Compatibilidad de emulación por procesador</h1>
+<p class="lead">Busca un procesador o incluso un modelo de celular. AndroidEmu usa su catálogo local y consulta información pública online cuando está disponible.</p>
+
+<div class="tool-banner">
+  <div>
+    <p class="eyebrow">CATÁLOGO + DATOS ONLINE</p>
+    <h2>Consulta automática</h2>
+    <p>Los benchmarks de referencia se mantienen en el catálogo; la búsqueda online añade contexto y fuentes públicas sin inventar datos.</p>
+  </div>
+  <a class="tool-button" href="procesadores/index.html">Ver catálogo completo →</a>
+</div>
+
+<div class="search">
+  <input id="searchCpu" type="search" placeholder="Ej.: Snapdragon 8 Gen 3, 870, Dimensity 8300 o Redmi Note…" aria-label="Buscar procesador o celular" autocomplete="off">
+</div>
+
+<div class="online-status" id="onlineStatus">
+  <span class="status-dot"></span>
+  <span id="statusText">Preparado para buscar en el catálogo y consultar información pública online.</span>
+</div>
+
+<div id="cpuResults" class="cpu-results"></div>
+<div id="detail" class="result-box" style="display:none"></div>
+
+<div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
+
+<h2>Cómo funciona</h2>
+<div class="info-grid">
+  <div><strong>1. Catálogo</strong><span>Busca entre los procesadores registrados en AndroidEmu.</span></div>
+  <div><strong>2. Internet</strong><span>Consulta Wikipedia/Wikimedia para añadir contexto público.</span></div>
+  <div><strong>3. Comparación</strong><span>Muestra benchmarks de referencia separados de la estimación de emulación.</span></div>
+  <div><strong>4. Sin inventar</strong><span>Si una fuente no entrega un dato, aparece como N/D.</span></div>
+  <div><strong>5. Actualizable</strong><span>El catálogo JSON puede ampliarse sin rehacer toda la página.</span></div>
+</div>
+
+<h2>Fichas detalladas</h2>
+<p>Para estadísticas y especificaciones de referencia, abre cualquier procesador del catálogo:</p>
+<div class="cpu-results" id="featured"></div>
+
+<h2>Importante sobre los datos</h2>
+<p>Los resultados de AnTuTu y Geekbench son valores de referencia del catálogo y pueden cambiar según dispositivo, refrigeración, firmware, RAM y versión del benchmark. La compatibilidad de emulación es una estimación editorial: no representa FPS garantizados.</p>
+<p class="note">La búsqueda online usa APIs públicas de Wikimedia desde el navegador. Una búsqueda web general de Google/Bing requiere una API con credenciales y no se ha incorporado ninguna clave privada al sitio.</p>
+<p class="note">AndroidEmu es una guía informativa. No distribuye ROMs, ISOs, BIOS ni copias no autorizadas.</p>
+</main>
+
+<footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
+
+<script>
+const names=["PS1","PSP","PS2","GameCube","Wii","3DS","Switch","PC"];
+const emuRules = [
+  ["PS1", 100], ["PSP", 95], ["PS2", 72], ["GameCube", 70],
+  ["Wii", 68], ["3DS", 67], ["Switch", 48], ["PC", 40]
+];
+
+let DB = [];
+const input=document.querySelector("#searchCpu");
+const results=document.querySelector("#cpuResults");
+const detail=document.querySelector("#detail");
+const statusText=document.querySelector("#statusText");
+
+function setStatus(text, online=false){
+  statusText.textContent=text;
+  document.querySelector(".online-status").classList.toggle("online", online);
+}
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function formatNum(v){
+  return typeof v==="number" ? v.toLocaleString("es-CL") : "N/D";
+}
+
+function normalize(s){
+  return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+
+function rankFor(c){
+  const a=c.antutu || 0;
+  if(a >= 1800000) return "Excelente";
+  if(a >= 1200000) return "Muy buena";
+  if(a >= 800000) return "Buena";
+  if(a >= 550000) return "Media";
+  return "Limitada";
+}
+
+function compatibility(c){
+  const base = c.antutu || 350000;
+  const gpuBoost = /Adreno 7|Adreno 8|Immortalis|Xclipse 9|Xclipse 8/i.test(c.gpu||"") ? 1.08 : 1;
+  const power = Math.min(100, Math.round((base/1800000)*100*gpuBoost));
+  const out={};
+  for(const [name, threshold] of emuRules){
+    const ratio = power / threshold;
+    out[name] = ratio >= 1.05 ? "Excelente" :
+                ratio >= 0.82 ? "Muy buena" :
+                ratio >= 0.62 ? "Buena" :
+                ratio >= 0.42 ? "Media" : "Limitada";
+  }
+  return out;
+}
+
+function render(list){
+  if(!list.length){
+    results.innerHTML="<p class='note'>No hay coincidencias locales. Si buscas un modelo concreto, AndroidEmu intentará localizar información pública online.</p>";
+    return;
+  }
+  results.innerHTML=list.slice(0,24).map(c=>`
+    <button class="cpu-card" data-slug="${esc(c.slug)}">
+      <strong>${esc(c.name)}</strong>
+      <span>${esc(c.family)} · ${esc(c.gpu)}</span>
+      <span>AnTuTu 11: ${formatNum(c.antutu)} · ${esc(c.tier)}</span>
+    </button>`).join("");
+  results.querySelectorAll(".cpu-card").forEach(b=>{
+    b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug)));
+  });
+}
+
+function show(c, onlineData=null){
+  const scores=compatibility(c);
+  detail.style.display="block";
+  detail.innerHTML=`
+    <p class="eyebrow">FICHA DEL PROCESADOR</p>
+    <h2>${esc(c.name)}</h2>
+    <div class="info-grid">
+      <div><strong>Familia</strong><span>${esc(c.family)}</span></div>
+      <div><strong>Modelo</strong><span>${esc(c.model)}</span></div>
+      <div><strong>CPU</strong><span>${esc(c.cores)} núcleos · ${esc(c.clock)}</span></div>
+      <div><strong>Proceso</strong><span>${esc(c.process)}</span></div>
+      <div><strong>GPU</strong><span>${esc(c.gpu)}</span></div>
+    </div>
+
+    <h3>Benchmarks de referencia</h3>
+    <div class="bench-grid">
+      <div><strong>AnTuTu 11</strong><span>${formatNum(c.antutu)}</span></div>
+      <div><strong>Geekbench 6 SC</strong><span>${formatNum(c.sc)}</span></div>
+      <div><strong>Geekbench 6 MC</strong><span>${formatNum(c.mc)}</span></div>
+      <div><strong>Índice AndroidEmu</strong><span>${c.score ?? "N/D"}</span></div>
+    </div>
+
+    <h3>Compatibilidad estimada</h3>
+    ${names.map(n=>`<div class="platform"><strong>${n}</strong><span class="badge">${scores[n]}</span></div>`).join("")}
+
+    <p><a class="tool-button" href="procesadores/${encodeURIComponent(c.slug)}.html">Abrir ficha completa →</a></p>
+
+    <div id="onlineBlock" class="online-block">
+      <p class="eyebrow">INFORMACIÓN ONLINE</p>
+      <div id="onlineContent">${onlineData ? renderOnline(onlineData) : "<p>Consultando información pública…</p>"}</div>
+    </div>
+    <p class="note">La compatibilidad es una estimación. El rendimiento real depende del emulador, juego, drivers, resolución, temperatura y configuración.</p>
+  `;
+  if(!onlineData) fetchOnline(c.name);
+  detail.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function renderOnline(d){
+  if(!d || !d.title) return "<p>No encontramos una página pública relevante.</p>";
+  return `
+    <h3>${esc(d.title)}</h3>
+    <p>${esc(d.extract || "Sin resumen disponible.")}</p>
+    <p><a class="back" target="_blank" rel="noopener" href="${esc(d.url)}">Ver fuente pública →</a></p>
+  `;
+}
+
+async function wikiSearch(query){
+  const url="https://en.wikipedia.org/w/api.php?action=opensearch&search="+encodeURIComponent(query)+"&limit=5&namespace=0&format=json&origin=*";
+  const r=await fetch(url);
+  if(!r.ok) throw new Error("Wikipedia search failed");
+  const j=await r.json();
+  return (j[1]||[]).map((title,i)=>({title,url:j[3]?.[i]||""}));
+}
+
+async function wikiSummary(title){
+  const url="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_"));
+  const r=await fetch(url);
+  if(!r.ok) throw new Error("Wikipedia summary failed");
+  const j=await r.json();
+  return {title:j.title, extract:j.extract, url:j.content_urls?.desktop?.page || ("https://en.wikipedia.org/wiki/"+encodeURIComponent(title.replace(/ /g,"_")))};
+}
+
+async function fetchOnline(name){
+  const target=document.querySelector("#onlineContent");
+  if(!target) return;
+  try{
+    setStatus("Consultando información pública online…", true);
+    const candidates=await wikiSearch(name+" processor");
+    let picked=candidates.find(x=>normalize(x.title).includes(normalize(name)));
+    if(!picked) picked=candidates[0];
+    if(!picked){
+      target.innerHTML="<p>No encontramos una fuente pública relevante para este nombre.</p>";
+      setStatus("Búsqueda online completada: sin coincidencia relevante.");
+      return;
+    }
+    const data=await wikiSummary(picked.title);
+    target.innerHTML=renderOnline(data);
+    setStatus("Información online actualizada desde una fuente pública.", true);
+  }catch(e){
+    target.innerHTML="<p>No fue posible consultar la fuente online en este momento. La ficha local sigue disponible.</p>";
+    setStatus("La consulta online falló; se mantiene la información local.");
+  }
+}
+
+async function searchOnlineIfNeeded(q){
+  if(!q || q.length < 3) return;
+  const local=DB.filter(c=>{
+    const hay=normalize(c.name+" "+c.model+" "+c.gpu+" "+c.family);
+    return hay.includes(normalize(q));
+  });
+  render(local);
+  if(local.length){
+    setStatus(local.length+" coincidencia(s) en el catálogo. Pulsa una para consultar información online.");
+    return;
+  }
+
+  setStatus("No está en el catálogo. Buscando una coincidencia pública online…");
+  try{
+    const candidates=await wikiSearch(q);
+    const first=candidates[0];
+    if(!first){
+      setStatus("No se encontró una coincidencia pública.");
+      return;
+    }
+    const data=await wikiSummary(first.title);
+    results.innerHTML=`
+      <div class="result-box">
+        <p class="eyebrow">RESULTADO ONLINE</p>
+        <h2>${esc(data.title)}</h2>
+        <p>${esc(data.extract || "Sin resumen disponible.")}</p>
+        <p><a class="back" target="_blank" rel="noopener" href="${esc(data.url)}">Abrir fuente pública →</a></p>
+        <p class="note">Este resultado online no se convierte automáticamente en benchmark. Para evitar datos falsos, las estadísticas solo se muestran cuando están verificadas en el catálogo de AndroidEmu.</p>
+      </div>`;
+    setStatus("Resultado público encontrado. Las estadísticas no verificadas se muestran como N/D.");
+  }catch(e){
+    setStatus("No se pudo consultar Internet ahora mismo. Revisa tu conexión.");
+  }
+}
+
+input.addEventListener("input", ()=>{
+  clearTimeout(window.__t);
+  window.__t=setTimeout(()=>searchOnlineIfNeeded(input.value.trim()),250);
+});
+
+async function init(){
+  try{
+    const r=await fetch("data/procesadores.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("DB");
+    DB=await r.json();
+    render(DB);
+    const featured=["snapdragon-8-elite","snapdragon-8-gen-3","snapdragon-8-gen-2","dimensity-9400","dimensity-9300","tensor-g4"];
+    document.querySelector("#featured").innerHTML=featured.map(slug=>{
+      const c=DB.find(x=>x.slug===slug);
+      return c?`<a class="cpu-card" href="procesadores/${esc(c.slug)}.html"><strong>${esc(c.name)}</strong><span>${esc(c.family)} · ${esc(c.gpu)}</span><span>AnTuTu 11: ${formatNum(c.antutu)}</span><b>Ver ficha →</b></a>`:"";
+    }).join("");
+  }catch(e){
+    setStatus("No se pudo cargar el catálogo local.");
+    results.innerHTML="<p class='note'>Error cargando la base de procesadores.</p>";
+  }
+}
+init();
+</script>
+</body>
+</html>
