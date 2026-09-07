@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Comprueba de forma orientativa qué plataformas puede intentar emular tu teléfono Android según su procesador.">
+<title>Compatibilidad de emulación en Android — AndroidEmu</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="wrap nav"><a class="logo" href="index.html">Android<span>Emu</span></a><nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a><a href="compatibilidad.html">Compatibilidad</a></nav></div></header>
+<main class="wrap article"><a class="back" href="index.html">← Volver a AndroidEmu</a>
+<p class="eyebrow">HERRAMIENTA ANDROIDEMU</p><h1>¿Qué puede emular tu celular?</h1>
+<p class="lead">Selecciona un procesador para obtener una estimación orientativa. El resultado real cambia según el juego, emulador, drivers, temperatura y configuración.</p>
+<div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
+<div class="checker"><label for="cpu"><strong>Selecciona tu procesador</strong></label>
+<select id="cpu" class="select"><option value="">— Elige uno —</option>
+<option value="8g3">Snapdragon 8 Gen 3</option><option value="8g2">Snapdragon 8 Gen 2</option><option value="8g1">Snapdragon 8 Gen 1</option>
+<option value="7g3">Snapdragon 7 Gen 3</option><option value="7g2">Snapdragon 7 Gen 2</option><option value="870">Snapdragon 870</option>
+<option value="778g">Snapdragon 778G</option><option value="g100">MediaTek Helio G100</option><option value="d8300">Dimensity 8300</option><option value="d9200">Dimensity 9200</option>
+</select><div id="result" class="result-box" style="display:none"></div></div>
+<h2>¿Qué significa el resultado?</h2><p>Esta herramienta no garantiza una velocidad concreta. La emulación depende de CPU, GPU, drivers, memoria, versión de Android, emulador y juego.</p>
+<h2>Qué plataformas suelen exigir más</h2><p>Las plataformas antiguas suelen ser menos exigentes. PS2, GameCube, Wii, 3DS y sistemas posteriores pueden requerir más rendimiento y ajustes específicos.</p>
+<h2>Cómo interpretar una prueba</h2><ul><li><strong>Excelente:</strong> buen punto de partida para títulos exigentes.</li><li><strong>Buena:</strong> muchos juegos pueden ser viables, con diferencias por título.</li><li><strong>Media:</strong> conviene priorizar estabilidad y resolución.</li><li><strong>Limitada:</strong> los resultados pueden depender mucho de cada juego.</li></ul>
+<p class="note">AndroidEmu no distribuye ROMs, ISOs ni copias no autorizadas. Usa software y juegos que tengas derecho a utilizar.</p>
+</main>
+<footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
+<script>
+const data={
+"8g3":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Excelente"},
+"8g2":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Excelente"},
+"8g1":{g:"Muy buena",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Muy buena"},
+"7g3":{g:"Buena",PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena",3DS:"Buena"},
+"7g2":{g:"Buena",PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena",3DS:"Media"},
+"870":{g:"Muy buena",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Buena"},
+"778g":{g:"Media",PS1:"Excelente",PSP:"Excelente",PS2:"Media",GameCube:"Media",Wii:"Media",3DS:"Media"},
+"g100":{g:"Limitada",PS1:"Excelente",PSP:"Buena",PS2:"Limitada",GameCube:"Limitada",Wii:"Limitada",3DS:"Limitada"},
+"d8300":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Muy buena"},
+"d9200":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Muy buena"}};
+const cpu=document.querySelector("#cpu"),result=document.querySelector("#result");
+cpu.addEventListener("change",()=>{const d=data[cpu.value];if(!d){result.style.display="none";return}
+const names=["PS1","PSP","PS2","GameCube","Wii","3DS"];result.style.display="block";
+result.innerHTML='<div class="score">'+d.g+'</div><p>Estimación general para este procesador.</p>'+
+names.map(n=>'<div class="platform"><strong>'+n+'</strong><span class="badge">'+d[n]+'</span></div>').join('')+
+'<p class="note">Estimación orientativa; no representa una garantía de FPS.</p>';});
+</script></body></html>
