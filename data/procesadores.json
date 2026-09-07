@@ -1,0 +1,757 @@
+[
+  {
+    "slug": "snapdragon-8-elite",
+    "name": "Snapdragon 8 Elite",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8750",
+    "gpu": "Adreno 830",
+    "cores": "8",
+    "process": "3 nm",
+    "clock": "4.32 GHz",
+    "antutu": 3126402,
+    "sc": 3013,
+    "mc": 9287,
+    "score": 90,
+    "tier": "Entusiasta",
+    "aliases": [
+      "sd 8 elite",
+      "sm8750",
+      "snapdragon 8 elite"
+    ]
+  },
+  {
+    "slug": "snapdragon-8-gen-3",
+    "name": "Snapdragon 8 Gen 3",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8650",
+    "gpu": "Adreno 750",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.3–3.4 GHz",
+    "antutu": 2345563,
+    "sc": 2203,
+    "mc": 6511,
+    "score": 77,
+    "tier": "Entusiasta",
+    "aliases": [
+      "sd 8 gen 3",
+      "sm8650",
+      "snapdragon 8 gen 3"
+    ]
+  },
+  {
+    "slug": "snapdragon-8-gen-2",
+    "name": "Snapdragon 8 Gen 2",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8550",
+    "gpu": "Adreno 740",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.2–3.36 GHz",
+    "antutu": 1757044,
+    "sc": 2004,
+    "mc": 5311,
+    "score": 63,
+    "tier": "Entusiasta",
+    "aliases": [
+      "sd 8 gen 2",
+      "sm8550",
+      "snapdragon 8 gen 2"
+    ]
+  },
+  {
+    "slug": "snapdragon-8s-gen-3",
+    "name": "Snapdragon 8s Gen 3",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8635",
+    "gpu": "Adreno 735",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.0 GHz",
+    "antutu": 1797821,
+    "sc": 1923,
+    "mc": 5179,
+    "score": 63,
+    "tier": "Gama alta",
+    "aliases": [
+      "sd 8s gen 3",
+      "sm8635",
+      "snapdragon 8s gen 3"
+    ]
+  },
+  {
+    "slug": "snapdragon-8-plus-gen-1",
+    "name": "Snapdragon 8+ Gen 1",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8475",
+    "gpu": "Adreno 730",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.2 GHz",
+    "antutu": 1420808,
+    "sc": 1761,
+    "mc": 4688,
+    "score": 56,
+    "tier": "Gama alta",
+    "aliases": [
+      "sd 8+ gen 1",
+      "sm8475",
+      "snapdragon 8+ gen 1"
+    ]
+  },
+  {
+    "slug": "snapdragon-8-gen-1",
+    "name": "Snapdragon 8 Gen 1",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8450",
+    "gpu": "Adreno 730",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.0 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama alta",
+    "aliases": [
+      "sd 8 gen 1",
+      "sm8450",
+      "snapdragon 8 gen 1"
+    ]
+  },
+  {
+    "slug": "snapdragon-888",
+    "name": "Snapdragon 888",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8350",
+    "gpu": "Adreno 660",
+    "cores": "8",
+    "process": "5 nm",
+    "clock": "2.84 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama alta anterior",
+    "aliases": [
+      "sd 888",
+      "sm8350",
+      "snapdragon 888"
+    ]
+  },
+  {
+    "slug": "snapdragon-870",
+    "name": "Snapdragon 870",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM8250-AC",
+    "gpu": "Adreno 650",
+    "cores": "8",
+    "process": "7 nm",
+    "clock": "3.2 GHz",
+    "antutu": 1010069,
+    "sc": 1298,
+    "mc": 3520,
+    "score": 44,
+    "tier": "Gama alta anterior",
+    "aliases": [
+      "sd 870",
+      "sm8250-ac",
+      "snapdragon 870"
+    ]
+  },
+  {
+    "slug": "snapdragon-778g",
+    "name": "Snapdragon 778G",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM7325",
+    "gpu": "Adreno 642L",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.4 GHz",
+    "antutu": 783606,
+    "sc": 1017,
+    "mc": 2943,
+    "score": 38,
+    "tier": "Gama media",
+    "aliases": [
+      "sd 778g",
+      "sm7325",
+      "snapdragon 778g"
+    ]
+  },
+  {
+    "slug": "snapdragon-7-plus-gen-3",
+    "name": "Snapdragon 7+ Gen 3",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM7675",
+    "gpu": "Adreno 732",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.8 GHz",
+    "antutu": 1660924,
+    "sc": 1860,
+    "mc": 5045,
+    "score": 61,
+    "tier": "Gama media-alta",
+    "aliases": [
+      "sd 7+ gen 3",
+      "sm7675",
+      "snapdragon 7+ gen 3"
+    ]
+  },
+  {
+    "slug": "snapdragon-7-plus-gen-2",
+    "name": "Snapdragon 7+ Gen 2",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM7475",
+    "gpu": "Adreno 725",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.91 GHz",
+    "antutu": 1317007,
+    "sc": 1654,
+    "mc": 4217,
+    "score": 51,
+    "tier": "Gama media-alta",
+    "aliases": [
+      "sd 7+ gen 2",
+      "sm7475",
+      "snapdragon 7+ gen 2"
+    ]
+  },
+  {
+    "slug": "snapdragon-7-gen-3",
+    "name": "Snapdragon 7 Gen 3",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM7550",
+    "gpu": "Adreno 720",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.63 GHz",
+    "antutu": 1027925,
+    "sc": 1131,
+    "mc": 3111,
+    "score": 43,
+    "tier": "Gama media",
+    "aliases": [
+      "sd 7 gen 3",
+      "sm7550",
+      "snapdragon 7 gen 3"
+    ]
+  },
+  {
+    "slug": "snapdragon-6-gen-3",
+    "name": "Snapdragon 6 Gen 3",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM6475",
+    "gpu": "Adreno 710",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.4 GHz",
+    "antutu": 840353,
+    "sc": null,
+    "mc": null,
+    "score": 39,
+    "tier": "Gama media",
+    "aliases": [
+      "sd 6 gen 3",
+      "sm6475",
+      "snapdragon 6 gen 3"
+    ]
+  },
+  {
+    "slug": "snapdragon-6-gen-1",
+    "name": "Snapdragon 6 Gen 1",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM6450",
+    "gpu": "Adreno 710",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.2 GHz",
+    "antutu": 737054,
+    "sc": 930,
+    "mc": 2700,
+    "score": 36,
+    "tier": "Gama media",
+    "aliases": [
+      "sd 6 gen 1",
+      "sm6450",
+      "snapdragon 6 gen 1"
+    ]
+  },
+  {
+    "slug": "snapdragon-4-gen-2",
+    "name": "Snapdragon 4 Gen 2",
+    "family": "Qualcomm Snapdragon",
+    "model": "SM4450",
+    "gpu": "Adreno 613",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.2 GHz",
+    "antutu": 568395,
+    "sc": 915,
+    "mc": 2115,
+    "score": 33,
+    "tier": "Gama básica-media",
+    "aliases": [
+      "sd 4 gen 2",
+      "sm4450",
+      "snapdragon 4 gen 2"
+    ]
+  },
+  {
+    "slug": "dimensity-9400",
+    "name": "Dimensity 9400",
+    "family": "MediaTek Dimensity",
+    "model": "MT6993",
+    "gpu": "Immortalis-G925",
+    "cores": "8",
+    "process": "3 nm",
+    "clock": "3.62 GHz",
+    "antutu": 2825187,
+    "sc": 2797,
+    "mc": 8767,
+    "score": 88,
+    "tier": "Entusiasta",
+    "aliases": [
+      "d 9400",
+      "dimensity 9400",
+      "mt6993"
+    ]
+  },
+  {
+    "slug": "dimensity-9300",
+    "name": "Dimensity 9300",
+    "family": "MediaTek Dimensity",
+    "model": "MT6989",
+    "gpu": "Immortalis-G720",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.25 GHz",
+    "antutu": 2447714,
+    "sc": 2186,
+    "mc": 7422,
+    "score": 78,
+    "tier": "Entusiasta",
+    "aliases": [
+      "d 9300",
+      "dimensity 9300",
+      "mt6989"
+    ]
+  },
+  {
+    "slug": "dimensity-9200",
+    "name": "Dimensity 9200",
+    "family": "MediaTek Dimensity",
+    "model": "MT6985",
+    "gpu": "Immortalis-G715",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.05 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama alta",
+    "aliases": [
+      "d 9200",
+      "dimensity 9200",
+      "mt6985"
+    ]
+  },
+  {
+    "slug": "dimensity-8400",
+    "name": "Dimensity 8400",
+    "family": "MediaTek Dimensity",
+    "model": "MT6899",
+    "gpu": "Mali-G720",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.25 GHz",
+    "antutu": 1948428,
+    "sc": 1576,
+    "mc": 6239,
+    "score": 65,
+    "tier": "Gama alta-media",
+    "aliases": [
+      "d 8400",
+      "dimensity 8400",
+      "mt6899"
+    ]
+  },
+  {
+    "slug": "dimensity-8300",
+    "name": "Dimensity 8300",
+    "family": "MediaTek Dimensity",
+    "model": "MT6897",
+    "gpu": "Mali-G615 MP6",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.35 GHz",
+    "antutu": 1604305,
+    "sc": 1375,
+    "mc": 4217,
+    "score": 55,
+    "tier": "Gama alta-media",
+    "aliases": [
+      "d 8300",
+      "dimensity 8300",
+      "mt6897"
+    ]
+  },
+  {
+    "slug": "dimensity-7300",
+    "name": "Dimensity 7300",
+    "family": "MediaTek Dimensity",
+    "model": "MT6878",
+    "gpu": "Mali-G615 MP2",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.5 GHz",
+    "antutu": 879714,
+    "sc": 1011,
+    "mc": 2813,
+    "score": 38,
+    "tier": "Gama media",
+    "aliases": [
+      "d 7300",
+      "dimensity 7300",
+      "mt6878"
+    ]
+  },
+  {
+    "slug": "dimensity-7200",
+    "name": "Dimensity 7200",
+    "family": "MediaTek Dimensity",
+    "model": "MT6886",
+    "gpu": "Mali-G610",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.8 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama media",
+    "aliases": [
+      "d 7200",
+      "dimensity 7200",
+      "mt6886"
+    ]
+  },
+  {
+    "slug": "dimensity-7030",
+    "name": "Dimensity 7030",
+    "family": "MediaTek Dimensity",
+    "model": "MT6855",
+    "gpu": "Mali-G610",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.5 GHz",
+    "antutu": 765130,
+    "sc": 1043,
+    "mc": 2472,
+    "score": null,
+    "tier": "Gama media",
+    "aliases": [
+      "d 7030",
+      "dimensity 7030",
+      "mt6855"
+    ]
+  },
+  {
+    "slug": "dimensity-6100-plus",
+    "name": "Dimensity 6100+",
+    "family": "MediaTek Dimensity",
+    "model": "MT6835",
+    "gpu": "Mali-G57 MP2",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.2 GHz",
+    "antutu": 513809,
+    "sc": 688,
+    "mc": 1900,
+    "score": 31,
+    "tier": "Gama básica-media",
+    "aliases": [
+      "d 6100+",
+      "dimensity 6100+",
+      "mt6835"
+    ]
+  },
+  {
+    "slug": "helio-g100",
+    "name": "Helio G100",
+    "family": "MediaTek Helio",
+    "model": "MT6789",
+    "gpu": "Mali-G57 MP2",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.2 GHz",
+    "antutu": 575630,
+    "sc": 727,
+    "mc": 2014,
+    "score": 31,
+    "tier": "Gama media-básica",
+    "aliases": [
+      "helio g100",
+      "mt6789"
+    ]
+  },
+  {
+    "slug": "helio-g99",
+    "name": "Helio G99",
+    "family": "MediaTek Helio",
+    "model": "MT6789",
+    "gpu": "Mali-G57 MP2",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.2 GHz",
+    "antutu": 554590,
+    "sc": 727,
+    "mc": 2047,
+    "score": 31,
+    "tier": "Gama media-básica",
+    "aliases": [
+      "helio g99",
+      "mt6789"
+    ]
+  },
+  {
+    "slug": "helio-g85",
+    "name": "Helio G85",
+    "family": "MediaTek Helio",
+    "model": "MT6769Z",
+    "gpu": "Mali-G52 MC2",
+    "cores": "8",
+    "process": "12 nm",
+    "clock": "2.0 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama básica-media",
+    "aliases": [
+      "helio g85",
+      "mt6769z"
+    ]
+  },
+  {
+    "slug": "exynos-2400",
+    "name": "Exynos 2400",
+    "family": "Samsung Exynos",
+    "model": "S5E9940",
+    "gpu": "Xclipse 940",
+    "cores": "10",
+    "process": "4 nm",
+    "clock": "3.21 GHz",
+    "antutu": 2046435,
+    "sc": 2115,
+    "mc": 6826,
+    "score": 73,
+    "tier": "Gama alta",
+    "aliases": [
+      "exynos 2400",
+      "s5e9940"
+    ]
+  },
+  {
+    "slug": "exynos-2400e",
+    "name": "Exynos 2400e",
+    "family": "Samsung Exynos",
+    "model": "S5E9945",
+    "gpu": "Xclipse 940",
+    "cores": "10",
+    "process": "4 nm",
+    "clock": "3.21 GHz",
+    "antutu": 1977269,
+    "sc": 2045,
+    "mc": 6397,
+    "score": 73,
+    "tier": "Gama alta",
+    "aliases": [
+      "exynos 2400e",
+      "s5e9945"
+    ]
+  },
+  {
+    "slug": "exynos-1580",
+    "name": "Exynos 1580",
+    "family": "Samsung Exynos",
+    "model": "S5E8855",
+    "gpu": "Xclipse 540",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "2.9 GHz",
+    "antutu": 1251512,
+    "sc": 1356,
+    "mc": 3888,
+    "score": 49,
+    "tier": "Gama media-alta",
+    "aliases": [
+      "exynos 1580",
+      "s5e8855"
+    ]
+  },
+  {
+    "slug": "exynos-1380",
+    "name": "Exynos 1380",
+    "family": "Samsung Exynos",
+    "model": "S5E8835",
+    "gpu": "Mali-G68 MP5",
+    "cores": "8",
+    "process": "5 nm",
+    "clock": "2.4 GHz",
+    "antutu": 767711,
+    "sc": 1008,
+    "mc": 2710,
+    "score": 36,
+    "tier": "Gama media",
+    "aliases": [
+      "exynos 1380",
+      "s5e8835"
+    ]
+  },
+  {
+    "slug": "exynos-1280",
+    "name": "Exynos 1280",
+    "family": "Samsung Exynos",
+    "model": "S5E8825",
+    "gpu": "Mali-G68",
+    "cores": "8",
+    "process": "5 nm",
+    "clock": "2.4 GHz",
+    "antutu": 615425,
+    "sc": 956,
+    "mc": null,
+    "score": null,
+    "tier": "Gama media",
+    "aliases": [
+      "exynos 1280",
+      "s5e8825"
+    ]
+  },
+  {
+    "slug": "tensor-g4",
+    "name": "Google Tensor G4",
+    "family": "Google Tensor",
+    "model": "Tensor G4",
+    "gpu": "Mali-G715 MP7",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "3.1 GHz",
+    "antutu": 1519937,
+    "sc": 1707,
+    "mc": 4431,
+    "score": 57,
+    "tier": "Gama alta",
+    "aliases": [
+      "google tensor g4",
+      "tensor g4"
+    ]
+  },
+  {
+    "slug": "tensor-g3",
+    "name": "Google Tensor G3",
+    "family": "Google Tensor",
+    "model": "Tensor G3",
+    "gpu": "Mali-G715 MP7",
+    "cores": "9",
+    "process": "4 nm",
+    "clock": "2.91 GHz",
+    "antutu": 1409016,
+    "sc": 1722,
+    "mc": 4458,
+    "score": 56,
+    "tier": "Gama alta",
+    "aliases": [
+      "google tensor g3",
+      "tensor g3"
+    ]
+  },
+  {
+    "slug": "tensor-g2",
+    "name": "Google Tensor G2",
+    "family": "Google Tensor",
+    "model": "Tensor G2",
+    "gpu": "Mali-G710 MP7",
+    "cores": "8",
+    "process": "5 nm",
+    "clock": "2.85 GHz",
+    "antutu": null,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama alta anterior",
+    "aliases": [
+      "google tensor g2",
+      "tensor g2"
+    ]
+  },
+  {
+    "slug": "unisoc-t760",
+    "name": "Unisoc T760",
+    "family": "Unisoc",
+    "model": "T760",
+    "gpu": "Mali-G57 MC4",
+    "cores": "8",
+    "process": "6 nm",
+    "clock": "2.2 GHz",
+    "antutu": 628581,
+    "sc": null,
+    "mc": null,
+    "score": null,
+    "tier": "Gama básica-media",
+    "aliases": [
+      "t760",
+      "unisoc t760"
+    ]
+  },
+  {
+    "slug": "unisoc-t606",
+    "name": "Unisoc T606",
+    "family": "Unisoc",
+    "model": "T606",
+    "gpu": "Mali-G57 MP1",
+    "cores": "8",
+    "process": "12 nm",
+    "clock": "1.6 GHz",
+    "antutu": 333647,
+    "sc": 378,
+    "mc": 1335,
+    "score": 23,
+    "tier": "Gama básica",
+    "aliases": [
+      "t606",
+      "unisoc t606"
+    ]
+  },
+  {
+    "slug": "dimensity-7400",
+    "name": "MediaTek Dimensity 7400",
+    "family": "MediaTek Dimensity",
+    "model": "MT6897",
+    "gpu": "Arm Mali-G615 MC2",
+    "cores": "8",
+    "process": "4 nm",
+    "clock": "4× A78 hasta 2.6 GHz + 4× A55 hasta 2.0 GHz",
+    "antutu": 953150,
+    "sc": 1061,
+    "mc": 3185,
+    "score": 40,
+    "tier": "Gama media alta",
+    "aliases": [
+      "7400",
+      "d7400",
+      "dimensity 7400",
+      "mediatek 7400",
+      "mediatek d 7400",
+      "mediatek dimensity 7400",
+      "mt6897",
+      "mtk 7400"
+    ],
+    "officialUrl": "https://www.mediatek.com/products/smartphones/mediatek-dimensity-7400",
+    "benchmarkUrl": "https://nanoreview.net/en/soc/mediatek-dimensity-7400",
+    "notes": "Especificaciones oficiales de MediaTek; benchmarks de referencia de NanoReview."
+  }
+]

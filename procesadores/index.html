@@ -1,0 +1,21 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Base de datos de procesadores Android: Snapdragon, Dimensity, Helio, Exynos, Tensor y Unisoc con especificaciones y benchmarks.">
+<title>Todos los procesadores Android — AndroidEmu</title><link rel="stylesheet" href="../style.css"></head>
+<body><header class="top"><div class="wrap nav"><a class="logo" href="../index.html">Android<span>Emu</span></a><nav><a href="../index.html#emuladores">Emuladores</a><a href="../index.html#juegos">Juegos</a><a href="../index.html#guias">Guías</a><a href="../compatibilidad.html">Compatibilidad</a></nav></div></header>
+<main class="wrap article"><a class="back" href="../compatibilidad.html">← Volver</a><p class="eyebrow">CATÁLOGO</p><h1>Procesadores Android</h1><p class="lead">Catálogo amplio de SoC populares con especificaciones y benchmarks de referencia. Puedes buscar por modelo, familia o GPU.</p>
+<div class="filters"><input id="q" type="search" placeholder="Buscar Snapdragon, Dimensity, Exynos, Tensor…"><select id="family"><option value="">Todas las familias</option><option>Qualcomm Snapdragon</option><option>MediaTek Dimensity</option><option>MediaTek Helio</option><option>Samsung Exynos</option><option>Google Tensor</option><option>Unisoc</option></select><select id="sort"><option value="name">Orden alfabético</option><option value="antutu">Mayor AnTuTu 11</option><option value="score">Mayor índice</option></select></div>
+<p id="count" class="note"></p><div id="list" class="cpu-results"></div>
+<h2>Sobre los benchmarks</h2><p>AnTuTu y Geekbench sirven para comparar rendimiento general, pero no miden directamente la calidad de emulación de cada consola. Por eso AndroidEmu separa los benchmarks de la estimación de emulación.</p>
+</main><footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><a href="sobre.html">Sobre</a> <a href="metodologia.html">Metodología</a> <a href="privacidad.html">Privacidad</a> <a href="terminos.html">Términos</a> <a href="contacto.html">Contacto</a></div></footer>
+<script>
+let DB=[];
+const q=document.getElementById('q'),f=document.getElementById('family'),s=document.getElementById('sort'),list=document.getElementById('list'),count=document.getElementById('count');
+function render(){
+  let a=DB.filter(x=>(!q.value||(x.name+' '+x.family+' '+x.gpu+' '+x.model).toLowerCase().includes(q.value.toLowerCase()))&&(!f.value||x.family===f.value));
+  a.sort((x,y)=>s.value==='antutu'?(y.antutu||-1)-(x.antutu||-1):s.value==='score'?(y.score||-1)-(x.score||-1):x.name.localeCompare(y.name));
+  count.textContent=a.length+' procesadores en el catálogo';
+  list.innerHTML=a.map(x=>`<a class="cpu-card" href="${x.slug}.html"><strong>${x.name}</strong><span>${x.family} · ${x.gpu}</span><span>${x.antutu?'AnTuTu 11: '+x.antutu.toLocaleString('es-CL'):'AnTuTu: N/D'} · ${x.tier}</span><b>Ver ficha →</b></a>`).join('')||'<p class="note">No hay resultados.</p>';
+}
+[q,f,s].forEach(x=>x.addEventListener('input',render));
+fetch('../data/procesadores.json',{cache:'no-store'}).then(r=>r.json()).then(x=>{DB=x;render()}).catch(()=>{count.textContent='No se pudo cargar el catálogo.'});
+</script></body></html>
