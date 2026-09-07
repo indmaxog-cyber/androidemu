@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Base de datos de procesadores Android para emulación: CPU, GPU, nivel orientativo y compatibilidad por consola.">
-<title>Compatibilidad por procesador — AndroidEmu</title>
+<meta name="description" content="Comprobador de compatibilidad de emulación Android con catálogo de procesadores, benchmarks de referencia y enriquecimiento online.">
+<title>Compatibilidad de emulación — AndroidEmu</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,51 +15,267 @@
 
 <main class="wrap article">
 <a class="back" href="index.html">← Volver a AndroidEmu</a>
-<p class="eyebrow">BASE DE DATOS</p>
+<p class="eyebrow">COMPROBADOR INTELIGENTE</p>
 <h1>Compatibilidad de emulación por procesador</h1>
-<p class="lead">Busca tu SoC para consultar CPU, GPU y una estimación orientativa de qué plataformas puedes intentar emular.</p><div class="tool-banner"><div><p class="eyebrow">CATÁLOGO COMPLETO</p><h2>Explora todos los procesadores</h2><p>Busca por Snapdragon, Dimensity, Exynos, Tensor, Helio o Unisoc y ordena por benchmarks.</p></div><a class="tool-button" href="procesadores/index.html">Abrir catálogo →</a></div>
+<p class="lead">Busca un procesador o incluso un modelo de celular. AndroidEmu usa su catálogo local y consulta información pública online cuando está disponible.</p>
 
-<div class="search"><input id="searchCpu" type="search" placeholder="Ej.: Snapdragon 8 Gen 3, 870, Dimensity 8300…" aria-label="Buscar procesador"></div>
+<div class="tool-banner">
+  <div>
+    <p class="eyebrow">CATÁLOGO + DATOS ONLINE</p>
+    <h2>Consulta automática</h2>
+    <p>Los benchmarks de referencia se mantienen en el catálogo; la búsqueda online añade contexto y fuentes públicas sin inventar datos.</p>
+  </div>
+  <a class="tool-button" href="procesadores/index.html">Ver catálogo completo →</a>
+</div>
+
+<div class="search">
+  <input id="searchCpu" type="search" placeholder="Ej.: Snapdragon 8 Gen 3, 870, Dimensity 8300 o Redmi Note…" aria-label="Buscar procesador o celular" autocomplete="off">
+</div>
+
+<div class="online-status" id="onlineStatus">
+  <span class="status-dot"></span>
+  <span id="statusText">Preparado para buscar en el catálogo y consultar información pública online.</span>
+</div>
+
 <div id="cpuResults" class="cpu-results"></div>
 <div id="detail" class="result-box" style="display:none"></div>
 
 <div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
 
-<h2>Fichas detalladas</h2><p>También puedes abrir una página individual de cada procesador para consultar su información y compatibilidad:</p><div class="cpu-results"><a class="cpu-card" href="procesadores/snapdragon-8-gen-3.html"><strong>Snapdragon 8 Gen 3</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-8-gen-2.html"><strong>Snapdragon 8 Gen 2</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-8-gen-1.html"><strong>Snapdragon 8 Gen 1</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-870.html"><strong>Snapdragon 870</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-778g.html"><strong>Snapdragon 778G</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-7-gen-3.html"><strong>Snapdragon 7 Gen 3</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/snapdragon-7-gen-2.html"><strong>Snapdragon 7 Gen 2</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/dimensity-9200.html"><strong>Dimensity 9200</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/dimensity-8300.html"><strong>Dimensity 8300</strong><span>Ver ficha →</span></a><a class="cpu-card" href="procesadores/helio-g100.html"><strong>Helio G100</strong><span>Ver ficha →</span></a></div><h2>Cómo interpretar las estimaciones</h2>
-<p>“Excelente”, “Buena”, “Media” y “Limitada” son categorías orientativas, no una garantía de FPS. El resultado real puede variar por juego, emulador, versión, drivers de GPU, temperatura, RAM y configuración.</p>
-<h2>Qué factores importan</h2>
-<ul><li><strong>CPU:</strong> afecta especialmente a la velocidad de emulación y a la compilación de instrucciones.</li><li><strong>GPU:</strong> tiene gran importancia cuando se aumenta la resolución o se usan efectos gráficos.</li><li><strong>Drivers:</strong> pueden cambiar compatibilidad y rendimiento.</li><li><strong>Temperatura:</strong> el throttling puede reducir el rendimiento durante sesiones largas.</li><li><strong>El juego:</strong> dos títulos de la misma consola pueden tener resultados muy diferentes.</li></ul>
+<h2>Cómo funciona</h2>
+<div class="info-grid">
+  <div><strong>1. Catálogo</strong><span>Busca entre los procesadores registrados en AndroidEmu.</span></div>
+  <div><strong>2. Internet</strong><span>Consulta Wikipedia/Wikimedia para añadir contexto público.</span></div>
+  <div><strong>3. Comparación</strong><span>Muestra benchmarks de referencia separados de la estimación de emulación.</span></div>
+  <div><strong>4. Sin inventar</strong><span>Si una fuente no entrega un dato, aparece como N/D.</span></div>
+  <div><strong>5. Actualizable</strong><span>El catálogo JSON puede ampliarse sin rehacer toda la página.</span></div>
+</div>
+
+<h2>Fichas detalladas</h2>
+<p>Para estadísticas y especificaciones de referencia, abre cualquier procesador del catálogo:</p>
+<div class="cpu-results" id="featured"></div>
+
+<h2>Importante sobre los datos</h2>
+<p>Los resultados de AnTuTu y Geekbench son valores de referencia del catálogo y pueden cambiar según dispositivo, refrigeración, firmware, RAM y versión del benchmark. La compatibilidad de emulación es una estimación editorial: no representa FPS garantizados.</p>
+<p class="note">La búsqueda online usa APIs públicas de Wikimedia desde el navegador. Una búsqueda web general de Google/Bing requiere una API con credenciales y no se ha incorporado ninguna clave privada al sitio.</p>
 <p class="note">AndroidEmu es una guía informativa. No distribuye ROMs, ISOs, BIOS ni copias no autorizadas.</p>
 </main>
 
 <footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
 
 <script>
-const cpus=[
-{name:"Snapdragon 8 Gen 3",aliases:"SM8650",gpu:"Adreno 750",tier:"Entusiasta",note:"SoC de gama alta orientado a cargas exigentes.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Excelente",Switch:"Buena",PC:"Variable"}},
-{name:"Snapdragon 8 Gen 2",aliases:"SM8550-AB",gpu:"Adreno 740",tier:"Entusiasta",note:"Gama alta con amplio margen para emulación pesada.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Excelente",Switch:"Buena",PC:"Variable"}},
-{name:"Snapdragon 8 Gen 1",aliases:"SM8450",gpu:"Adreno 730",tier:"Gama alta",note:"Buen rendimiento, aunque la temperatura puede ser importante.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Muy buena",Switch:"Media",PC:"Variable"}},
-{name:"Snapdragon 870",aliases:"SM8250-AC",gpu:"Adreno 650",tier:"Gama alta anterior",note:"SoC conocido por su buen rendimiento sostenido en muchos dispositivos.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Buena",Switch:"Media",PC:"Variable"}},
-{name:"Snapdragon 778G",aliases:"SM7325",gpu:"Adreno 642L",tier:"Gama media",note:"Adecuado para plataformas antiguas y algunas cargas intermedias.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Media",GameCube:"Media",Wii:"Media","3DS":"Media",Switch:"Limitada",PC:"Limitada"}},
-{name:"Snapdragon 7 Gen 3",aliases:"SM7550-AB",gpu:"Adreno 720",tier:"Gama media-alta",note:"Buen punto de partida para emulación moderada.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena","3DS":"Buena",Switch:"Media",PC:"Limitada"}},
-{name:"Snapdragon 7 Gen 2",aliases:"SM7475",gpu:"Adreno 710",tier:"Gama media-alta",note:"Rendimiento equilibrado para muchas plataformas.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena","3DS":"Media",Switch:"Limitada",PC:"Limitada"}},
-{name:"Dimensity 9200",aliases:"MT6985",gpu:"Immortalis-G715",tier:"Entusiasta",note:"SoC de gama alta con GPU potente.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Muy buena",Switch:"Buena",PC:"Variable"}},
-{name:"Dimensity 8300",aliases:"MT6897",gpu:"Mali-G615",tier:"Gama alta-media",note:"Alto rendimiento general para emulación exigente.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Muy buena",Switch:"Media",PC:"Variable"}},
-{name:"Helio G100",aliases:"MT6789",gpu:"Mali-G57 MC2",tier:"Gama media",note:"Más orientado a emulación de plataformas ligeras.",scores:{PS1:"Excelente",PSP:"Buena",PS2:"Limitada",GameCube:"Limitada",Wii:"Limitada","3DS":"Limitada",Switch:"Limitada",PC:"Limitada"}}
+const names=["PS1","PSP","PS2","GameCube","Wii","3DS","Switch","PC"];
+const emuRules = [
+  ["PS1", 100], ["PSP", 95], ["PS2", 72], ["GameCube", 70],
+  ["Wii", 68], ["3DS", 67], ["Switch", 48], ["PC", 40]
 ];
 
-const names=["PS1","PSP","PS2","GameCube","Wii","3DS","Switch","PC"];
-const results=document.querySelector("#cpuResults"), detail=document.querySelector("#detail"), input=document.querySelector("#searchCpu");
+let DB = [];
+const input=document.querySelector("#searchCpu");
+const results=document.querySelector("#cpuResults");
+const detail=document.querySelector("#detail");
+const statusText=document.querySelector("#statusText");
+
+function setStatus(text, online=false){
+  statusText.textContent=text;
+  document.querySelector(".online-status").classList.toggle("online", online);
+}
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function formatNum(v){
+  return typeof v==="number" ? v.toLocaleString("es-CL") : "N/D";
+}
+
+function normalize(s){
+  return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+
+function rankFor(c){
+  const a=c.antutu || 0;
+  if(a >= 1800000) return "Excelente";
+  if(a >= 1200000) return "Muy buena";
+  if(a >= 800000) return "Buena";
+  if(a >= 550000) return "Media";
+  return "Limitada";
+}
+
+function compatibility(c){
+  const base = c.antutu || 350000;
+  const gpuBoost = /Adreno 7|Adreno 8|Immortalis|Xclipse 9|Xclipse 8/i.test(c.gpu||"") ? 1.08 : 1;
+  const power = Math.min(100, Math.round((base/1800000)*100*gpuBoost));
+  const out={};
+  for(const [name, threshold] of emuRules){
+    const ratio = power / threshold;
+    out[name] = ratio >= 1.05 ? "Excelente" :
+                ratio >= 0.82 ? "Muy buena" :
+                ratio >= 0.62 ? "Buena" :
+                ratio >= 0.42 ? "Media" : "Limitada";
+  }
+  return out;
+}
+
 function render(list){
- results.innerHTML=list.length?list.map((c,i)=>`<button class="cpu-card" data-i="${cpus.indexOf(c)}"><strong>${c.name}</strong><span>${c.gpu} · ${c.tier}</span></button>`).join(""):"<p class='note'>No encontramos ese procesador. Prueba con otro nombre.</p>";
- document.querySelectorAll(".cpu-card").forEach(b=>b.onclick=()=>show(cpus[+b.dataset.i]));
+  if(!list.length){
+    results.innerHTML="<p class='note'>No hay coincidencias locales. Si buscas un modelo concreto, AndroidEmu intentará localizar información pública online.</p>";
+    return;
+  }
+  results.innerHTML=list.slice(0,24).map(c=>`
+    <button class="cpu-card" data-slug="${esc(c.slug)}">
+      <strong>${esc(c.name)}</strong>
+      <span>${esc(c.family)} · ${esc(c.gpu)}</span>
+      <span>AnTuTu 11: ${formatNum(c.antutu)} · ${esc(c.tier)}</span>
+    </button>`).join("");
+  results.querySelectorAll(".cpu-card").forEach(b=>{
+    b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug)));
+  });
 }
-function show(c){
- detail.style.display="block";
- detail.innerHTML=`<p class="eyebrow">PROCESADOR</p><h2>${c.name}</h2><p><strong>Modelo:</strong> ${c.aliases}</p><p><strong>GPU:</strong> ${c.gpu}</p><p><strong>Nivel:</strong> ${c.tier}</p><p>${c.note}</p><h3>Compatibilidad orientativa</h3>${names.map(n=>`<div class="platform"><strong>${n}</strong><span class="badge">${c.scores[n]}</span></div>`).join("")}<p class="note">Esta ficha no sustituye una prueba del juego concreto.</p>`;
+
+function show(c, onlineData=null){
+  const scores=compatibility(c);
+  detail.style.display="block";
+  detail.innerHTML=`
+    <p class="eyebrow">FICHA DEL PROCESADOR</p>
+    <h2>${esc(c.name)}</h2>
+    <div class="info-grid">
+      <div><strong>Familia</strong><span>${esc(c.family)}</span></div>
+      <div><strong>Modelo</strong><span>${esc(c.model)}</span></div>
+      <div><strong>CPU</strong><span>${esc(c.cores)} núcleos · ${esc(c.clock)}</span></div>
+      <div><strong>Proceso</strong><span>${esc(c.process)}</span></div>
+      <div><strong>GPU</strong><span>${esc(c.gpu)}</span></div>
+    </div>
+
+    <h3>Benchmarks de referencia</h3>
+    <div class="bench-grid">
+      <div><strong>AnTuTu 11</strong><span>${formatNum(c.antutu)}</span></div>
+      <div><strong>Geekbench 6 SC</strong><span>${formatNum(c.sc)}</span></div>
+      <div><strong>Geekbench 6 MC</strong><span>${formatNum(c.mc)}</span></div>
+      <div><strong>Índice AndroidEmu</strong><span>${c.score ?? "N/D"}</span></div>
+    </div>
+
+    <h3>Compatibilidad estimada</h3>
+    ${names.map(n=>`<div class="platform"><strong>${n}</strong><span class="badge">${scores[n]}</span></div>`).join("")}
+
+    <p><a class="tool-button" href="procesadores/${encodeURIComponent(c.slug)}.html">Abrir ficha completa →</a></p>
+
+    <div id="onlineBlock" class="online-block">
+      <p class="eyebrow">INFORMACIÓN ONLINE</p>
+      <div id="onlineContent">${onlineData ? renderOnline(onlineData) : "<p>Consultando información pública…</p>"}</div>
+    </div>
+    <p class="note">La compatibilidad es una estimación. El rendimiento real depende del emulador, juego, drivers, resolución, temperatura y configuración.</p>
+  `;
+  if(!onlineData) fetchOnline(c.name);
+  detail.scrollIntoView({behavior:"smooth",block:"start"});
 }
-input.addEventListener("input",()=>{const q=input.value.toLowerCase().trim();render(cpus.filter(c=>(c.name+" "+c.aliases+" "+c.gpu).toLowerCase().includes(q)));});
-render(cpus);
+
+function renderOnline(d){
+  if(!d || !d.title) return "<p>No encontramos una página pública relevante.</p>";
+  return `
+    <h3>${esc(d.title)}</h3>
+    <p>${esc(d.extract || "Sin resumen disponible.")}</p>
+    <p><a class="back" target="_blank" rel="noopener" href="${esc(d.url)}">Ver fuente pública →</a></p>
+  `;
+}
+
+async function wikiSearch(query){
+  const url="https://en.wikipedia.org/w/api.php?action=opensearch&search="+encodeURIComponent(query)+"&limit=5&namespace=0&format=json&origin=*";
+  const r=await fetch(url);
+  if(!r.ok) throw new Error("Wikipedia search failed");
+  const j=await r.json();
+  return (j[1]||[]).map((title,i)=>({title,url:j[3]?.[i]||""}));
+}
+
+async function wikiSummary(title){
+  const url="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_"));
+  const r=await fetch(url);
+  if(!r.ok) throw new Error("Wikipedia summary failed");
+  const j=await r.json();
+  return {title:j.title, extract:j.extract, url:j.content_urls?.desktop?.page || ("https://en.wikipedia.org/wiki/"+encodeURIComponent(title.replace(/ /g,"_")))};
+}
+
+async function fetchOnline(name){
+  const target=document.querySelector("#onlineContent");
+  if(!target) return;
+  try{
+    setStatus("Consultando información pública online…", true);
+    const candidates=await wikiSearch(name+" processor");
+    let picked=candidates.find(x=>normalize(x.title).includes(normalize(name)));
+    if(!picked) picked=candidates[0];
+    if(!picked){
+      target.innerHTML="<p>No encontramos una fuente pública relevante para este nombre.</p>";
+      setStatus("Búsqueda online completada: sin coincidencia relevante.");
+      return;
+    }
+    const data=await wikiSummary(picked.title);
+    target.innerHTML=renderOnline(data);
+    setStatus("Información online actualizada desde una fuente pública.", true);
+  }catch(e){
+    target.innerHTML="<p>No fue posible consultar la fuente online en este momento. La ficha local sigue disponible.</p>";
+    setStatus("La consulta online falló; se mantiene la información local.");
+  }
+}
+
+async function searchOnlineIfNeeded(q){
+  if(!q || q.length < 3) return;
+  const local=DB.filter(c=>{
+    const hay=normalize(c.name+" "+c.model+" "+c.gpu+" "+c.family);
+    return hay.includes(normalize(q));
+  });
+  render(local);
+  if(local.length){
+    setStatus(local.length+" coincidencia(s) en el catálogo. Pulsa una para consultar información online.");
+    return;
+  }
+
+  setStatus("No está en el catálogo. Buscando una coincidencia pública online…");
+  try{
+    const candidates=await wikiSearch(q);
+    const first=candidates[0];
+    if(!first){
+      setStatus("No se encontró una coincidencia pública.");
+      return;
+    }
+    const data=await wikiSummary(first.title);
+    results.innerHTML=`
+      <div class="result-box">
+        <p class="eyebrow">RESULTADO ONLINE</p>
+        <h2>${esc(data.title)}</h2>
+        <p>${esc(data.extract || "Sin resumen disponible.")}</p>
+        <p><a class="back" target="_blank" rel="noopener" href="${esc(data.url)}">Abrir fuente pública →</a></p>
+        <p class="note">Este resultado online no se convierte automáticamente en benchmark. Para evitar datos falsos, las estadísticas solo se muestran cuando están verificadas en el catálogo de AndroidEmu.</p>
+      </div>`;
+    setStatus("Resultado público encontrado. Las estadísticas no verificadas se muestran como N/D.");
+  }catch(e){
+    setStatus("No se pudo consultar Internet ahora mismo. Revisa tu conexión.");
+  }
+}
+
+input.addEventListener("input", ()=>{
+  clearTimeout(window.__t);
+  window.__t=setTimeout(()=>searchOnlineIfNeeded(input.value.trim()),250);
+});
+
+async function init(){
+  try{
+    const r=await fetch("data/procesadores.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("DB");
+    DB=await r.json();
+    render(DB);
+    const featured=["snapdragon-8-elite","snapdragon-8-gen-3","snapdragon-8-gen-2","dimensity-9400","dimensity-9300","tensor-g4"];
+    document.querySelector("#featured").innerHTML=featured.map(slug=>{
+      const c=DB.find(x=>x.slug===slug);
+      return c?`<a class="cpu-card" href="procesadores/${esc(c.slug)}.html"><strong>${esc(c.name)}</strong><span>${esc(c.family)} · ${esc(c.gpu)}</span><span>AnTuTu 11: ${formatNum(c.antutu)}</span><b>Ver ficha →</b></a>`:"";
+    }).join("");
+  }catch(e){
+    setStatus("No se pudo cargar el catálogo local.");
+    results.innerHTML="<p class='note'>Error cargando la base de procesadores.</p>";
+  }
+}
+init();
 </script>
 </body>
 </html>
