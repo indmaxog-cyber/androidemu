@@ -15,3 +15,6 @@
 .online-block p{color:#b9c0cc}
 .online-block h3{margin-top:4px}
 @media(max-width:700px){.info-grid{grid-template-columns:1fr}.bench-grid{grid-template-columns:1fr}}
+.source-links{margin:18px 0;padding:16px;border:1px solid rgba(120,220,170,.22);border-radius:12px;background:rgba(120,220,170,.05)}
+.source-links>strong{display:block;margin-bottom:10px}.source-links div{display:flex;gap:10px;flex-wrap:wrap}.source-links a,.source-card a{color:#66e0a3;text-decoration:none;font-weight:700}.source-card{display:grid;gap:6px;padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025)}
+.source-card strong{font-size:1.05rem}.source-card span{opacity:.8}.source-card p{margin:.2rem 0}.source-card a{width:max-content}
