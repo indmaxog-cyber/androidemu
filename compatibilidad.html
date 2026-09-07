@@ -108,8 +108,8 @@ function render(list){
   results.querySelectorAll(".cpu-card").forEach(b=>b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug))));
 }
 function sourceLinks(c){
-  const fam=c.family||""; const official=c.officialUrl||OFFICIAL_SOURCES[fam]||OFFICIAL_SOURCES[Object.keys(OFFICIAL_SOURCES).find(k=>fam.includes(k))||""];
-  return `<div class="source-links"><strong>Fuentes técnicas</strong><div>${official?`<a target="_blank" rel="noopener" href="${esc(official)}">Fabricante oficial</a>`:""}${c.benchmarkUrl?`<a target="_blank" rel="noopener" href="${esc(c.benchmarkUrl)}">Benchmark de referencia</a>`:""}<a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent('"'+c.name+'" benchmark')}">Buscar benchmarks</a></div></div>`;
+  const count=(c.officialUrl?1:0)+(c.benchmarkUrl?1:0)+1;
+  return `<div class="source-links"><strong>Fuentes procesadas</strong><div><span class="note">${count} fuente(s) consultadas. Los datos se integran en AndroidEmu sin obligarte a salir del sitio.</span></div></div>`;
 }
 function show(c,onlineData=null){
   if(!c)return;
@@ -124,41 +124,75 @@ function show(c,onlineData=null){
   if(!onlineData)fetchOnline(c);detail.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderOnline(d){
-  if(!d||(!d.wiki&&!d.wikidata))return `<p>No encontramos una fuente pública relevante.</p>`;
+  if(!d)return `<p>No encontramos información pública suficientemente relacionada.</p>`;
   let html="";
-  if(d.wikidata)html+=`<div class="source-card"><strong>Wikidata</strong><span>${esc(d.wikidata.label||"Entidad técnica")}</span>${d.wikidata.url?`<a target="_blank" rel="noopener" href="${esc(d.wikidata.url)}">Ver entidad →</a>`:""}</div>`;
-  if(d.wiki)html+=`<div class="source-card"><strong>Wikipedia</strong><span>${esc(d.wiki.title)}</span><p>${esc(d.wiki.extract||"Sin resumen disponible.")}</p><a target="_blank" rel="noopener" href="${esc(d.wiki.url)}">Ver fuente →</a></div>`;
-  return html+`<p class="note">Las especificaciones y benchmarks principales de AndroidEmu no se reemplazan automáticamente con un resultado online genérico. Primero se priorizan datos verificados del catálogo.</p>`;
+  if(d.identity)html+=`<div class="source-card"><strong>Identificación</strong><span>${esc(d.identity)}</span></div>`;
+  if(d.specs && Object.keys(d.specs).length){
+    html+=`<div class="bench-grid">${Object.entries(d.specs).map(([k,v])=>`<div><strong>${esc(k)}</strong><span>${esc(v)}</span></div>`).join("")}</div>`;
+  }
+  if(d.benchmarks && Object.keys(d.benchmarks).length){
+    html+=`<h4>Benchmarks encontrados online</h4><div class="bench-grid">${Object.entries(d.benchmarks).map(([k,v])=>`<div><strong>${esc(k)}</strong><span>${esc(v)}</span></div>`).join("")}</div>`;
+  }
+  if(d.summary)html+=`<div class="source-card"><strong>Contexto técnico procesado</strong><p>${esc(d.summary)}</p></div>`;
+  html+=`<p class="note">Los datos anteriores fueron extraídos y normalizados desde fuentes públicas. AndroidEmu no convierte automáticamente un número encontrado en Internet en una puntuación de emulación.</p>`;
+  return html;
 }
-async function wikiSearch(query){const u="https://en.wikipedia.org/w/api.php?action=opensearch&search="+encodeURIComponent(query)+"&limit=5&namespace=0&format=json&origin=*";const r=await fetch(u);if(!r.ok)throw Error();const j=await r.json();return(j[1]||[]).map((title,i)=>({title,url:j[3]?.[i]||""}));}
-async function wikiSummary(title){const u="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_"));const r=await fetch(u);if(!r.ok)throw Error();const j=await r.json();return{title:j.title,extract:j.extract,url:j.content_urls?.desktop?.page||"https://en.wikipedia.org/wiki/"+encodeURIComponent(title.replace(/ /g,"_"))};}
-async function wikidataSearch(query){const u="https://www.wikidata.org/w/api.php?action=wbsearchentities&search="+encodeURIComponent(query)+"&language=en&format=json&limit=5&origin=*";const r=await fetch(u);if(!r.ok)throw Error();const j=await r.json();return(j.search||[]).map(x=>({id:x.id,label:x.label,description:x.description,url:"https://www.wikidata.org/wiki/"+x.id}));}
+function canonicalizeQuery(q){
+  let x=String(q||"").trim();
+  x=x.replace(/\bmtk\b/ig,"MediaTek").replace(/\bmediatek\s+dimensity\b/ig,"Dimensity");
+  if(/\bmediatek\b/i.test(x) && /\b\d{4}\b/.test(x) && !/\bdimensity\b/i.test(x)) x=x.replace(/\bmediatek\b/i,"Dimensity");
+  if(/\bd\s*(\d{4})\b/i.test(x) && !/dimensity/i.test(x)) x=x.replace(/\bd\s*(\d{4})\b/i,"Dimensity $1");
+  if(/\b(sd|snapdragon)\s*(\d+)(?:\s*(gen\s*\d+|\+?\s*gen\s*\d+))?/i.test(x) && !/snapdragon/i.test(x)) x="Snapdragon "+x.replace(/\bsd\s*/i,"");
+  return x.replace(/\s+/g," ").trim();
+}
+function extractOnlineData(text){
+  const specs={},benchmarks={};
+  const clean=String(text||"").replace(/\s+/g," ").trim();
+  let m=clean.match(/(\d+(?:\.\d+)?)\s*nm\b/i); if(m)specs["Proceso"]=m[1]+" nm";
+  m=clean.match(/(octa|hexa|deca|quad|dual)[- ]?core/i); if(m)specs["Núcleos"]=m[0].replace(/-core/i,"-core");
+  m=clean.match(/(?:up to|hasta)\s*(\d+(?:\.\d+)?)\s*GHz/i); if(m)specs["Frecuencia máxima"]=m[1]+" GHz";
+  m=clean.match(/(?:Mali[- ]?[A-Z0-9-]+|Adreno\s*[A-Z0-9-]+|Immortalis[- ]?[A-Z0-9-]+|Xclipse\s*[A-Z0-9-]+)/i); if(m)specs["GPU"]=m[0];
+  m=clean.match(/AnTuTu(?:\s*11)?[^\d]{0,20}([\d,.]{4,})/i); if(m)benchmarks["AnTuTu"]=m[1];
+  m=clean.match(/Geekbench\s*6[^\d]{0,20}([\d,.]+)[^\d]{0,20}([\d,.]+)/i); if(m)benchmarks["Geekbench 6"]=m[1]+" / "+m[2];
+  return {specs,benchmarks};
+}
+async function wikiSearch(query){const variants=[query,canonicalizeQuery(query),query+" processor",query+" chipset"].filter((v,i,a)=>v&&a.indexOf(v)===i);let out=[];for(const v of variants){const u="https://en.wikipedia.org/w/api.php?action=opensearch&search="+encodeURIComponent(v)+"&limit=5&namespace=0&format=json&origin=*";const r=await fetch(u);if(!r.ok)continue;const j=await r.json();out.push(...(j[1]||[]).map((title,i)=>({title,url:j[3]?.[i]||""})));}return out.filter((x,i,a)=>a.findIndex(y=>normalize(y.title)===normalize(x.title))===i);}
+async function wikiSummary(title){const u="https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(title.replace(/ /g,"_"));const r=await fetch(u);if(!r.ok)throw Error();const j=await r.json();return{title:j.title,extract:j.extract||"",url:j.content_urls?.desktop?.page||""};}
+async function wikidataSearch(query){const variants=[query,canonicalizeQuery(query)].filter((v,i,a)=>v&&a.indexOf(v)===i);let out=[];for(const v of variants){const u="https://www.wikidata.org/w/api.php?action=wbsearchentities&search="+encodeURIComponent(v)+"&language=en&format=json&limit=8&origin=*";const r=await fetch(u);if(!r.ok)continue;const j=await r.json();out.push(...(j.search||[]).map(x=>({id:x.id,label:x.label,description:x.description,url:"https://www.wikidata.org/wiki/"+x.id})));}return out.filter((x,i,a)=>a.findIndex(y=>y.id===x.id)===i);}
 async function fetchOnline(c){
-  const target=document.querySelector("#onlineContent");if(!target)return;try{
-    setStatus("Consultando Wikidata + Wikipedia como fuentes públicas secundarias…",true);
-    const q=c.name;const [wd,ws]=await Promise.allSettled([wikidataSearch(q),wikiSearch(q)]);
-    const wikidata=wd.status==="fulfilled"?wd.value.find(x=>normalize(x.label||"").includes(normalize(c.name))||normalize(c.name).includes(normalize(x.label||"")))||wd.value[0]:null;
-    const cand=ws.status==="fulfilled"?ws.value:[];let picked=cand.find(x=>normalize(x.title)===normalize(c.name))||cand.find(x=>normalize(x.title).includes(normalize(c.name)))||cand[0];
-    const wiki=picked?await wikiSummary(picked.title):null;target.innerHTML=renderOnline({wikidata,wiki});setStatus("Consulta online completada: fuentes secundarias encontradas.",true);
-  }catch(e){target.innerHTML="<p>No fue posible consultar las fuentes online ahora. La ficha local sigue disponible.</p>";setStatus("Consulta online no disponible; se mantiene la información local.");}
-}
-function localSearch(q){
-  const scored=DB.map(c=>({c,score:scoreMatch(c,q)})).filter(x=>x.score>=55).sort((a,b)=>b.score-a.score);
-  return scored;
+  const target=document.querySelector("#onlineContent");if(!target)return;
+  try{
+    setStatus("Consultando y procesando información pública online…",true);
+    const q=canonicalizeQuery(c.name);const [wd,ws]=await Promise.all([wikidataSearch(q),wikiSearch(q)]);
+    const exact=wd.find(x=>normalize(x.label)===normalize(q))||wd.find(x=>normalize(x.label).includes(normalize(q)))||wd[0];
+    const candidates=ws.length?ws:[];
+    let picked=candidates.find(x=>normalize(x.title)===normalize(q))||candidates.find(x=>normalize(x.title).includes(normalize(q)))||candidates[0];
+    let summary="",title="";if(picked){const w=await wikiSummary(picked.title);summary=w.extract;title=w.title;}
+    const parsed=extractOnlineData(summary);
+    target.innerHTML=renderOnline({identity:title||exact?.label||q,specs:parsed.specs,benchmarks:parsed.benchmarks,summary:summary});
+    setStatus("Información online procesada y adaptada a la ficha de AndroidEmu.",true);
+  }catch(e){target.innerHTML="<p>No fue posible consultar Internet ahora. La ficha local sigue disponible.</p>";setStatus("Consulta online no disponible; se mantiene la información local.");}
 }
 async function searchOnlineIfNeeded(q){
   if(!q||q.length<2){results.innerHTML="";setStatus("Escribe un procesador o modelo de celular para comenzar.");return;}
-  const local=localSearch(q);render(local);
+  const canonical=canonicalizeQuery(q);const local=localSearch(q).length?localSearch(q):localSearch(canonical);render(local);
   if(local.length){setStatus(`${local.length} coincidencia(s) en el catálogo. La coincidencia más fuerte se muestra primero.`);return;}
-  setStatus("No está en el catálogo. Buscando coincidencias en Wikidata y Wikipedia…",true);
+  setStatus(`Buscando y procesando información online para “${canonical}”…`,true);
   try{
-    const variants=[q,q.replace(/\bmediatek\b/i,"Dimensity"),q.replace(/\bmtk\b/i,"MediaTek Dimensity")].filter((v,i,a)=>v&&a.indexOf(v)===i);
-    const all=[];for(const v of variants){const r=await wikidataSearch(v);all.push(...r);}
-    const unique=all.filter((x,i,a)=>a.findIndex(y=>y.id===x.id)===i).slice(0,5);
-    const wiki=await wikiSearch(variants[0]);
-    results.innerHTML=`<div class="result-box"><p class="eyebrow">RESULTADOS ONLINE</p>${unique.map(x=>`<div class="source-card"><strong>${esc(x.label)}</strong><span>${esc(x.description||"Sin descripción")}</span><a target="_blank" rel="noopener" href="${esc(x.url)}">Ver en Wikidata →</a></div>`).join("")}${wiki.slice(0,3).map(x=>`<div class="source-card"><strong>${esc(x.title)}</strong><span>Wikipedia</span><a target="_blank" rel="noopener" href="${esc(x.url)}">Ver fuente →</a></div>`).join("")}<p class="note">No convertimos automáticamente estos resultados en benchmarks ni en una ficha de emulación. Para eso el procesador debe tener datos verificados en AndroidEmu.</p></div>`;
-    setStatus("Resultados online encontrados. Datos técnicos no verificados: N/D.",true);
-  }catch(e){setStatus("No se pudo consultar Internet ahora mismo.");}
+    const [wd,ws]=await Promise.all([wikidataSearch(canonical),wikiSearch(canonical)]);
+    const exactWd=wd.find(x=>normalize(x.label)===normalize(canonical))||wd.find(x=>normalize(x.label).includes(normalize(canonical)))||wd[0];
+    const exactWiki=ws.find(x=>normalize(x.title)===normalize(canonical))||ws.find(x=>normalize(x.title).includes(normalize(canonical)))||ws[0];
+    let summary=""; if(exactWiki){summary=(await wikiSummary(exactWiki.title)).extract||"";}
+    const parsed=extractOnlineData(summary);
+    const displayName=exactWd?.label||exactWiki?.title||canonical;
+    const onlineCard={identity:displayName,specs:parsed.specs,benchmarks:parsed.benchmarks,summary:summary};
+    results.innerHTML=`<div class="result-box"><p class="eyebrow">RESULTADO ONLINE PROCESADO</p><h3>${esc(displayName)}</h3>${renderOnline(onlineCard)}<button class="tool-button" id="useOnline">Usar esta coincidencia</button></div>`;
+    document.querySelector("#useOnline")?.addEventListener("click",()=>{
+      const temp={name:displayName,family:"Resultado online",model:"N/D",gpu:parsed.specs.GPU||"N/D",cores:parsed.specs.Núcleos||"N/D",process:parsed.specs.Proceso||"N/D",clock:parsed.specs["Frecuencia máxima"]||"N/D",antutu:0,sc:0,mc:0,score:null,tier:"Online",aliases:[canonical],slug:""};
+      show(temp,onlineCard);
+    });
+    setStatus("Resultado online encontrado y transformado a formato AndroidEmu.",true);
+  }catch(e){results.innerHTML="<p class='note'>No encontramos información pública suficiente para esa búsqueda.</p>";setStatus("No se pudo consultar Internet ahora mismo.");}
 }
 async function init(){try{const r=await fetch("data/procesadores.json",{cache:"no-store"});DB=await r.json();setStatus(`Catálogo cargado: ${DB.length} procesadores. Fuentes oficiales y benchmarks se priorizan sobre búsquedas genéricas.`);document.querySelector("#featured").innerHTML=DB.slice(0,8).map(c=>`<button class="cpu-card" data-slug="${esc(c.slug)}"><strong>${esc(c.name)}</strong><span>${esc(c.family)} · ${esc(c.gpu||"GPU N/D")}</span><span>${c.antutu?`AnTuTu 11: ${formatNum(c.antutu)}`:"Benchmarks: N/D"}</span></button>`).join("");document.querySelectorAll("#featured .cpu-card").forEach(b=>b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug))));}catch(e){setStatus("No se pudo cargar el catálogo local.");}}
 input.addEventListener("input",()=>{clearTimeout(window.__t);window.__t=setTimeout(()=>searchOnlineIfNeeded(input.value.trim()),220);});
