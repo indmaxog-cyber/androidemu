@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Guía de AndroidEmu sobre emulación y rendimiento en Android.">
+<title>Guía — AndroidEmu</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap nav"><a class="logo" href="index.html">Android<span>Emu</span></a><nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a></nav></div></header>
+<main class="wrap article">
+  <a class="back" href="index.html">← Volver</a>
+  <p class="eyebrow">ANDROID EMU</p>
+  <h1 id="title">Guía de emulación</h1>
+  <p id="intro" class="lead"></p>
+  <div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
+  <div id="body"></div>
+</main>
+<footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
+<script>
+const data={
+"ps2":["Emulación de PlayStation 2 en Android","El rendimiento depende principalmente del SoC, la GPU, los drivers y la configuración del emulador.","<h2>Qué necesitas revisar</h2><p>Comprueba el procesador de tu teléfono, la GPU, la memoria disponible y la versión de Android. Dos teléfonos con especificaciones parecidas pueden comportarse de forma diferente por sus drivers.</p><h2>Configuración inicial</h2><ul><li>Empieza con resolución nativa.</li><li>Usa el backend gráfico recomendado por el emulador.</li><li>Prueba primero sin mejoras gráficas.</li><li>Activa mejoras una por una para identificar qué ajuste causa problemas.</li></ul>"],
+"gamecube":["Emulación de GameCube en Android","GameCube suele ofrecer buenos resultados en dispositivos modernos, aunque la compatibilidad varía según cada juego.","<h2>Rendimiento</h2><p>La velocidad de CPU y la GPU influyen bastante. La resolución interna, shaders y efectos gráficos también pueden cambiar mucho la carga.</p><h2>Consejo</h2><p>Si un juego presenta tirones, prueba primero reducir resolución y desactivar mejoras antes de cambiar otros parámetros.</p>"],
+"wii":["Emulación de Wii en Android","La emulación de Wii puede exigir bastante al dispositivo y además requiere una configuración adecuada de controles.","<h2>Controles</h2><p>Los juegos que dependen de movimiento pueden requerir una configuración de controles distinta. Comprueba las opciones de entrada del emulador.</p><h2>Rendimiento</h2><p>Busca estabilidad antes que calidad gráfica máxima.</p>"],
+"psp":["Emulación de PSP en Android","PSP es una plataforma relativamente ligera para muchos teléfonos Android actuales.","<h2>Ajustes recomendados</h2><p>Comienza con resolución moderada y aumenta la escala si el dispositivo mantiene una velocidad estable.</p>"],
+"god-of-war-2":["God of War II en Android mediante emulación","La experiencia depende mucho del hardware y de la configuración utilizada. Esta ficha se centra en factores técnicos, no en proporcionar copias del juego.","<h2>Qué afecta al rendimiento</h2><p>CPU, GPU, drivers, resolución interna y sincronización son factores importantes.</p><h2>Legalidad</h2><p>AndroidEmu no distribuye ROMs, ISOs ni copias no autorizadas. Utiliza software y juegos que tengas derecho a utilizar.</p>"],
+"gta-sa":["GTA San Andreas y emulación en Android","Antes de emular una versión de consola, comprueba qué versión del juego y qué plataforma estás intentando ejecutar.","<h2>Compatibilidad</h2><p>El resultado puede cambiar considerablemente entre emuladores y dispositivos.</p>"],
+"re4":["Resident Evil 4 en Android mediante emulación","La versión original, la plataforma y el emulador utilizado determinan los requisitos.","<h2>Rendimiento</h2><p>Reduce primero resolución y efectos si aparecen caídas de velocidad.</p>"],
+"fps":["Cómo mejorar los FPS en un emulador Android","Una configuración equilibrada suele ser mejor que activar todas las mejoras gráficas.","<h2>Checklist</h2><ol><li>Comprueba que el juego sea compatible.</li><li>Reduce la resolución interna.</li><li>Prueba otro backend gráfico si el emulador lo permite.</li><li>Actualiza el emulador desde una fuente oficial.</li><li>Evita aplicaciones que consuman recursos en segundo plano.</li></ol>"],
+"cierre":["El juego se cierra al iniciar: qué revisar","Los cierres pueden deberse a incompatibilidad, configuración, drivers o falta de recursos.","<h2>Pasos</h2><ol><li>Restablece la configuración del juego.</li><li>Prueba una resolución menor.</li><li>Comprueba la compatibilidad conocida del emulador.</li><li>Actualiza desde la fuente oficial.</li></ol>"],
+"drivers":["Qué son los drivers de GPU y por qué importan","Los drivers permiten que Android y las aplicaciones se comuniquen correctamente con el hardware gráfico.","<h2>En emulación</h2><p>Un driver puede cambiar el rendimiento y la compatibilidad. No todos los dispositivos permiten instalar drivers alternativos.</p>"]
+};
+const key=new URLSearchParams(location.search).get("tipo")||"ps2";
+const d=data[key]||data.ps2;
+document.title=d[0]+" — AndroidEmu"; title.textContent=d[0]; intro.textContent=d[1]; body.innerHTML=d[2];
+</script>
+</body></html>

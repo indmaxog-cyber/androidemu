@@ -1,0 +1,3 @@
+const input=document.querySelector("#search"), results=document.querySelector("#results");
+const items=[...document.querySelectorAll(".card")].map(x=>({text:x.innerText.toLowerCase(),html:x.outerHTML}));
+input?.addEventListener("input",()=>{const q=input.value.trim().toLowerCase();if(!q){results.classList.remove("show");results.innerHTML="";return}const found=items.filter(x=>x.text.includes(q));results.classList.add("show");results.innerHTML=found.length?`<strong>Resultados:</strong><div class="grid" style="margin-top:12px">${found.map(x=>x.html).join("")}</div>`:"No encontramos resultados. Prueba con otra palabra.";});
