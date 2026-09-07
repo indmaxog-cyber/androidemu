@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Comprobador de compatibilidad de emulación Android con catálogo de procesadores, benchmarks de referencia y enriquecimiento online.">
+<title>Compatibilidad de emulación — AndroidEmu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap nav">
+<a class="logo" href="index.html">Android<span>Emu</span></a>
+<nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a><a href="compatibilidad.html">Compatibilidad</a></nav>
+</div></header>
+
+<main class="wrap article">
+<a class="back" href="index.html">← Volver a AndroidEmu</a>
+<p class="eyebrow">COMPROBADOR INTELIGENTE</p>
+<h1>Compatibilidad de emulación por procesador</h1>
+<p class="lead">Busca un procesador o incluso un modelo de celular. AndroidEmu usa su catálogo local y consulta información pública online cuando está disponible.</p>
+
+<div class="tool-banner">
+  <div>
+    <p class="eyebrow">CATÁLOGO + DATOS ONLINE</p>
+    <h2>Consulta automática</h2>
+    <p>Los benchmarks de referencia se mantienen en el catálogo; la búsqueda online añade contexto y fuentes públicas sin inventar datos.</p>
+  </div>
+  <a class="tool-button" href="procesadores/index.html">Ver catálogo completo →</a>
+</div>
+
+<div class="search">
+  <input id="searchCpu" type="search" placeholder="Ej.: Snapdragon 8 Gen 3, 870, Dimensity 8300 o Redmi Note…" aria-label="Buscar procesador o celular" autocomplete="off">
+</div>
+
+<div class="online-status" id="onlineStatus">
+  <span class="status-dot"></span>
+  <span id="statusText">Preparado para buscar en el catálogo y consultar información pública online.</span>
+</div>
+
+<div id="cpuResults" class="cpu-results"></div>
+<div id="detail" class="result-box" style="display:none"></div>
+
+<div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
+
+<h2>Cómo funciona</h2>
+<div class="info-grid">
+  <div><strong>1. Catálogo</strong><span>Busca entre los procesadores registrados en AndroidEmu.</span></div>
+  <div><strong>2. Internet</strong><span>Consulta varias fuentes públicas secundarias; Wikipedia y Wikidata se usan solo como contexto.</span></div>
+  <div><strong>3. Comparación</strong><span>Muestra benchmarks de referencia separados de la estimación de emulación.</span></div>
+  <div><strong>4. Sin inventar</strong><span>Si una fuente no entrega un dato, aparece como N/D.</span></div>
+  <div><strong>5. Actualizable</strong><span>El catálogo JSON puede ampliarse sin rehacer toda la página.</span></div>
+</div>
+
+<h2>Fichas detalladas</h2>
+<p>Para estadísticas y especificaciones de referencia, abre cualquier procesador del catálogo:</p>
+<div class="cpu-results" id="featured"></div>
+
+<h2>Importante sobre los datos</h2>
+<p>Los resultados de AnTuTu y Geekbench son valores de referencia del catálogo y pueden cambiar según dispositivo, refrigeración, firmware, RAM y versión del benchmark. La compatibilidad de emulación es una estimación editorial: no representa FPS garantizados.</p>
+<p class="note">La búsqueda online usa APIs públicas compatibles con navegador (Wikidata/Wikipedia). Las fuentes oficiales y benchmarks se enlazan desde fichas verificadas; no se expone ninguna clave privada en el sitio.</p>
+<p class="note">AndroidEmu es una guía informativa. No distribuye ROMs, ISOs, BIOS ni copias no autorizadas.</p>
+</main>
+
+<footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
+
+<script>
+const names=["PS1","PSP","PS2","GameCube","Wii","3DS","Switch","PC"];
+const emuRules=[["PS1",100],["PSP",95],["PS2",72],["GameCube",70],["Wii",68],["3DS",67],["Switch",48],["PC",40]];
+let DB=[];
+const input=document.querySelector("#searchCpu"),results=document.querySelector("#cpuResults"),detail=document.querySelector("#detail"),statusText=document.querySelector("#statusText");
+
+function setStatus(text,online=false){
+  statusText.textContent=text;
+  const el=document.querySelector(".online-status");
+  if(el) el.classList.toggle("online",online);
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function formatNum(v){return typeof v==="number"?v.toLocaleString("es-CL"):"N/D";}
+function normalize(s){
+  return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()
+    .replace(/[+®™’']/g," ").replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+}
+function compact(s){return normalize(s).replace(/\s+/g,"");}
+function tokens(s){return normalize(s).split(" ").filter(Boolean);}
+function aliasesFor(c){
+  return [...new Set([c.name,c.model,c.family,...(c.aliases||[])])].filter(Boolean);
+}
+function scoreMatch(c,q){
+  const nq=normalize(q), cq=compact(q), qt=tokens(q); let best=0;
+  for(const a of aliasesFor(c)){
+    const na=normalize(a), ca=compact(a), at=tokens(a);
+    if(na===nq||ca===cq) best=Math.max(best,100);
+    else if(na.includes(nq)||nq.includes(na)) best=Math.max(best,90);
+    const overlap=qt.filter(t=>at.includes(t)).length;
+    if(overlap) best=Math.max(best,Math.round(52+(overlap/Math.max(qt.length,at.length))*43));
+  }
+  const hay=normalize(c.name+" "+c.model+" "+c.gpu+" "+c.family+" "+(c.aliases||[]).join(" "));
+  if(qt.length && qt.every(t=>hay.includes(t))) best=Math.max(best,82);
+  return best;
+}
+function compatibility(c){
+  if(!c.antutu)return Object.fromEntries(names.map(n=>[n,"N/D"]));
+  const base=c.antutu;
+  const gpuBoost=/Adreno 7|Adreno 8|Immortalis|Xclipse 9|Xclipse 8|Mali G7|Mali G715|Mali G720|Mali G925/i.test(c.gpu||"")?1.08:1;
+  const power=Math.min(100,Math.round((base/1800000)*100*gpuBoost)),out={};
+  for(const [name,threshold] of emuRules){
+    const ratio=power/threshold;
+    out[name]=ratio>=1.05?"Excelente":ratio>=.82?"Muy buena":ratio>=.62?"Buena":ratio>=.42?"Media":"Limitada";
+  }
+  return out;
+}
+function render(list){
+  if(!list.length){
+    results.innerHTML="<p class='note'>No hay coincidencias en la base local. AndroidEmu consultará Internet y procesará las coincidencias encontradas.</p>";
+    return;
+  }
+  results.innerHTML=list.slice(0,24).map(({c,score})=>`
+    <button class="cpu-card" data-slug="${esc(c.slug)}">
+      <strong>${esc(c.name)}</strong>
+      <span>${esc(c.family)} · ${esc(c.gpu||"GPU N/D")}</span>
+      <span>${c.antutu?`AnTuTu 11: ${formatNum(c.antutu)}`:"Benchmarks: N/D"} · ${esc(c.tier||"Sin clasificar")}</span>
+    </button>`).join("");
+  results.querySelectorAll(".cpu-card").forEach(b=>b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug))));
+}
+function show(c,onlineData=null){
+  if(!c)return;
+  const scores=compatibility(c);
+  detail.style.display="block";
+  detail.innerHTML=`
+    <p class="eyebrow">FICHA DEL PROCESADOR</p>
+    <h2>${esc(c.name)}</h2>
+    <div class="info-grid">
+      <div><strong>Familia</strong><span>${esc(c.family||"N/D")}</span></div>
+      <div><strong>Modelo</strong><span>${esc(c.model||"N/D")}</span></div>
+      <div><strong>CPU</strong><span>${esc(c.cores||"N/D")} núcleos · ${esc(c.clock||"N/D")}</span></div>
+      <div><strong>Proceso</strong><span>${esc(c.process||"N/D")}</span></div>
+      <div><strong>GPU</strong><span>${esc(c.gpu||"N/D")}</span></div>
+    </div>
+    <h3>Benchmarks de referencia</h3>
+    <div class="bench-grid">
+      <div><strong>AnTuTu 11</strong><span>${formatNum(c.antutu)}</span></div>
+      <div><strong>Geekbench 6 SC</strong><span>${formatNum(c.sc)}</span></div>
+      <div><strong>Geekbench 6 MC</strong><span>${formatNum(c.mc)}</span></div>
+      <div><strong>Índice AndroidEmu</strong><span>${c.score??"N/D"}</span></div>
+    </div>
+    <h3>Compatibilidad estimada</h3>
+    ${names.map(n=>`<div class="platform"><strong>${n}</strong><span class="badge">${scores[n]}</span></div>`).join("")}
+    ${c.slug?`<p><a class="tool-button" href="procesadores/${encodeURIComponent(c.slug)}.html">Abrir ficha completa →</a></p>`:""}
+    <div id="onlineBlock" class="online-block">
+      <p class="eyebrow">INFORMACIÓN OBTENIDA Y PROCESADA DESDE INTERNET</p>
+      <div id="onlineContent">${onlineData?renderOnline(onlineData):"<p>Consultando y procesando fuentes públicas…</p>"}</div>
+    </div>
+    <p class="note">La compatibilidad es una estimación editorial. El rendimiento real depende del emulador, juego, drivers, resolución, temperatura y configuración.</p>`;
+  if(!onlineData) fetchOnline(c);
+  detail.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderOnline(d){
+  if(!d || !d.found) return `<p>No encontramos suficiente información técnica pública para completar esta ficha.</p>`;
+  const fields=[
+    ["Nombre identificado",d.name],
+    ["Descripción procesada",d.description],
+    ["CPU detectada",d.cpu],
+    ["GPU detectada",d.gpu],
+    ["Proceso detectado",d.process],
+    ["Frecuencia detectada",d.clock],
+    ["Núcleos detectados",d.cores],
+    ["AnTuTu detectado",d.antutu?formatNum(d.antutu):null],
+    ["Geekbench 6 SC detectado",d.sc?formatNum(d.sc):null],
+    ["Geekbench 6 MC detectado",d.mc?formatNum(d.mc):null]
+  ].filter(x=>x[1]!==null&&x[1]!==undefined&&x[1]!==""&&x[1]!=="N/D");
+  return `<div class="source-card"><strong>Resultado procesado</strong><span>AndroidEmu comparó y normalizó ${d.sources||1} fuente(s) pública(s).</span>${fields.map(x=>`<p><b>${esc(x[0])}:</b> ${esc(x[1])}</p>`).join("")}</div>
+    <p class="note">Los datos encontrados en Internet se muestran como información procesada. AndroidEmu no convierte automáticamente un dato ambiguo en un benchmark verificado ni en una puntuación de emulación.</p>`;
+}
+async function wikiSearch(query,lang="en"){
+  const host=lang==="es"?"https://es.wikipedia.org":"https://en.wikipedia.org";
+  const u=`${host}/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=6&namespace=0&format=json&origin=*`;
+  const r=await fetch(u); if(!r.ok) throw Error();
+  const j=await r.json();
+  return (j[1]||[]).map((title,i)=>({title,summary:j[2]?.[i]||"",url:j[3]?.[i]||"",lang}));
+}
+async function wikiSummary(item){
+  const host=item.lang==="es"?"https://es.wikipedia.org":"https://en.wikipedia.org";
+  const u=`${host}/api/rest_v1/page/summary/${encodeURIComponent(item.title.replace(/ /g,"_"))}`;
+  const r=await fetch(u); if(!r.ok) return item.summary||"";
+  const j=await r.json(); return j.extract||item.summary||"";
+}
+async function wikidataSearch(query){
+  const u=`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=en&format=json&limit=6&origin=*`;
+  const r=await fetch(u); if(!r.ok) throw Error();
+  const j=await r.json();
+  return (j.search||[]).map(x=>({id:x.id,label:x.label,description:x.description||""}));
+}
+function canonicalVariants(q){
+  const n=normalize(q), compactQ=n.replace(/\s/g,"");
+  const arr=[q];
+  const m=n.match(/(?:mediatek|mtk)?\s*(?:dimensity)?\s*(\d{3,4})$/);
+  if(m){
+    arr.push(`MediaTek Dimensity ${m[1]}`,`Dimensity ${m[1]}`,`MediaTek ${m[1]}`,`MTK ${m[1]}`);
+  }
+  if(/snapdragon|qualcomm|sd\s/.test(n)){
+    const m2=n.match(/(?:snapdragon|sd)\s*(\d[\w\s\+\-]*)/);
+    if(m2) arr.push(`Qualcomm Snapdragon ${m2[1].trim()}`);
+  }
+  if(/exynos/.test(n)) arr.push(`Samsung ${q}`);
+  return [...new Set(arr.filter(Boolean))];
+}
+function extractOnline(texts,query,labels){
+  const all=texts.filter(Boolean).join(" ");
+  const low=all.toLowerCase();
+  const out={found:!!all,sources:texts.filter(Boolean).length,name:labels[0]||query,description:(texts.find(t=>t.length>80)||"").slice(0,700)};
+  const cpuPatterns=[
+    /(\d+\s*[x×]\s*(?:arm\s*)?cortex-[a-z0-9\-]+\s*(?:up to|a)?\s*[\d.]+\s*ghz(?:\s*\+\s*\d+\s*[x×][^.;,]*)?)/i,
+    /(octa[- ]core|hexa[- ]core|deca[- ]core|quad[- ]core)/i
+  ];
+  const gpu=all.match(/\b((?:adreno|mali|xclipse|immortalis|powervr)[- a-z0-9]+(?:mc\d+)?)/i);
+  const proc=all.match(/\b(\d+(?:\.\d+)?\s*nm)\b/i);
+  const clock=all.match(/\b(?:up to|hasta|at)\s*(\d+(?:\.\d+)?)\s*ghz\b/i)||all.match(/\b(\d+(?:\.\d+)?)\s*ghz\b/i);
+  const cores=all.match(/\b(\d+)[ -]?(?:core|cores|nucleos|núcleos)\b/i);
+  const ant=all.match(/(?:antutu(?:\s*11)?|anTuTu(?:\s*11)?)[^\d]{0,30}([\d,.]{5,10})/i);
+  const gb=all.match(/geekbench(?:\s*6)?[^\d]{0,40}(\d{3,5})\s*(?:\/|,|-)\s*(\d{3,5})/i);
+  if(cpuPatterns[0]&&cpuPatterns[0].test(all)) out.cpu=all.match(cpuPatterns[0])[1];
+  else if(cpuPatterns[1]&&cpuPatterns[1].test(all)) out.cpu=all.match(cpuPatterns[1])[1];
+  if(gpu) out.gpu=gpu[1].trim();
+  if(proc) out.process=proc[1];
+  if(clock) out.clock=clock[1]+" GHz";
+  if(cores) out.cores=cores[1];
+  if(ant) out.antutu=Number(ant[1].replace(/[,.]/g,""));
+  if(gb){out.sc=Number(gb[1]);out.mc=Number(gb[2]);}
+  return out;
+}
+async function fetchOnline(c){
+  const target=document.querySelector("#onlineContent"); if(!target)return;
+  try{
+    setStatus("Consultando y procesando Internet…",true);
+    const variants=canonicalVariants(c.name);
+    const searches=[];
+    for(const v of variants.slice(0,4)){
+      const r=await Promise.allSettled([wikiSearch(v,"en"),wikiSearch(v,"es"),wikidataSearch(v)]);
+      if(r[0].status==="fulfilled") searches.push(...r[0].value);
+      if(r[1].status==="fulfilled") searches.push(...r[1].value);
+    }
+    const unique=searches.filter((x,i,a)=>a.findIndex(y=>(y.title||y.label)===(x.title||x.label))===i);
+    const ranked=unique.map(x=>{
+      const label=x.title||x.label||"";
+      const score=scoreMatch({name:label,model:"",family:"",gpu:"",aliases:variants},c.name);
+      return {...x,score};
+    }).sort((a,b)=>b.score-a.score).slice(0,6);
+    const summaries=await Promise.all(ranked.slice(0,4).map(async x=>x.title?await wikiSummary(x):x.description||""));
+    const labels=ranked.map(x=>x.title||x.label).filter(Boolean);
+    const parsed=extractOnline(summaries,c.name,labels);
+    parsed.sources=Math.max(1,new Set(ranked.map(x=>x.lang||"wikidata")).size);
+    target.innerHTML=renderOnline(parsed);
+    setStatus(parsed.found?"Internet procesado: datos útiles integrados en la ficha.":"Internet consultado: sin datos técnicos suficientes.",true);
+  }catch(e){
+    target.innerHTML="<p>No fue posible completar la consulta online ahora. La ficha local sigue funcionando.</p>";
+    setStatus("Consulta online temporalmente no disponible.");
+  }
+}
+async function searchOnlineIfNeeded(q){
+  if(!q||q.length<2){results.innerHTML="";setStatus("Escribe un procesador o modelo de celular para comenzar.");return;}
+  const local=localSearch(q);
+  render(local);
+  if(local.length){setStatus(`${local.length} coincidencia(s) en el catálogo. Se prioriza la coincidencia más exacta.`);return;}
+  setStatus("No está en el catálogo. Buscando, comparando y procesando información pública de Internet…",true);
+  try{
+    const variants=canonicalVariants(q);
+    const batches=await Promise.all(variants.slice(0,4).map(async v=>{
+      const r=await Promise.allSettled([wikiSearch(v,"en"),wikiSearch(v,"es"),wikidataSearch(v)]);
+      return [
+        ...(r[0].status==="fulfilled"?r[0].value:[]),
+        ...(r[1].status==="fulfilled"?r[1].value:[]),
+        ...(r[2].status==="fulfilled"?r[2].value:[])
+      ];
+    }));
+    const all=batches.flat();
+    const unique=all.filter((x,i,a)=>a.findIndex(y=>(y.title||y.label)===(x.title||x.label))===i);
+    const ranked=unique.map(x=>({...x,score:scoreMatch({name:x.title||x.label,model:"",family:"",gpu:"",aliases:variants},q)}))
+      .sort((a,b)=>b.score-a.score).slice(0,5);
+    if(!ranked.length){results.innerHTML="<p class='note'>Internet no devolvió una coincidencia suficientemente clara.</p>";return;}
+    results.innerHTML=`<div class="result-box"><p class="eyebrow">RESULTADO PROCESADO DESDE INTERNET</p>
+      ${ranked.map(x=>`<button class="cpu-card online-result" data-title="${esc(x.title||x.label)}" data-lang="${esc(x.lang||"en")}"><strong>${esc(x.title||x.label)}</strong><span>${esc(x.description||"Coincidencia técnica")}</span><span>Coincidencia: ${x.score}%</span></button>`).join("")}
+      <p class="note">AndroidEmu procesa estas coincidencias dentro de la página. No necesitas abrir una web externa.</p></div>`;
+    results.querySelectorAll(".online-result").forEach(b=>b.addEventListener("click",async()=>{
+      const item={title:b.dataset.title,lang:b.dataset.lang};
+      const summary=await wikiSummary(item).catch(()=> "");
+      const d=extractOnline([summary],q,[item.title]);
+      show({
+        slug:"",
+        name:d.name||q,
+        family:"Detectado online",
+        model:"N/D",gpu:d.gpu||"N/D",cores:d.cores||"N/D",process:d.process||"N/D",
+        clock:d.clock||"N/D",antutu:d.antutu,sc:d.sc,mc:d.mc,score:null
+      },d);
+    }));
+    setStatus("Coincidencias online procesadas. Elige la más cercana.",true);
+  }catch(e){setStatus("No se pudo consultar Internet ahora mismo.");}
+}
+function localSearch(q){
+  return DB.map(c=>({c,score:scoreMatch(c,q)})).filter(x=>x.score>=55).sort((a,b)=>b.score-a.score);
+}
+async function init(){
+  try{
+    const r=await fetch("data/procesadores.json",{cache:"no-store"});
+    DB=await r.json();
+    setStatus(`Catálogo cargado: ${DB.length} procesadores. Internet se usa para complementar lo que no esté en la base.`);
+    document.querySelector("#featured").innerHTML=DB.slice(0,8).map(c=>`
+      <button class="cpu-card" data-slug="${esc(c.slug)}"><strong>${esc(c.name)}</strong><span>${esc(c.family)} · ${esc(c.gpu||"GPU N/D")}</span><span>${c.antutu?`AnTuTu 11: ${formatNum(c.antutu)}`:"Benchmarks: N/D"}</span></button>`).join("");
+    document.querySelectorAll("#featured .cpu-card").forEach(b=>b.addEventListener("click",()=>show(DB.find(x=>x.slug===b.dataset.slug))));
+  }catch(e){setStatus("No se pudo cargar el catálogo local.");}
+}
+input.addEventListener("input",()=>{clearTimeout(window.__t);window.__t=setTimeout(()=>searchOnlineIfNeeded(input.value.trim()),260);});
+init();
+</script>
+</body>
+</html>
