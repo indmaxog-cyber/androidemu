@@ -1,41 +1,65 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Comprueba de forma orientativa qué plataformas puede intentar emular tu teléfono Android según su procesador.">
-<title>Compatibilidad de emulación en Android — AndroidEmu</title><link rel="stylesheet" href="style.css"></head>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Base de datos de procesadores Android para emulación: CPU, GPU, nivel orientativo y compatibilidad por consola.">
+<title>Compatibilidad por procesador — AndroidEmu</title>
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
-<header class="top"><div class="wrap nav"><a class="logo" href="index.html">Android<span>Emu</span></a><nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a><a href="compatibilidad.html">Compatibilidad</a></nav></div></header>
-<main class="wrap article"><a class="back" href="index.html">← Volver a AndroidEmu</a>
-<p class="eyebrow">HERRAMIENTA ANDROIDEMU</p><h1>¿Qué puede emular tu celular?</h1>
-<p class="lead">Selecciona un procesador para obtener una estimación orientativa. El resultado real cambia según el juego, emulador, drivers, temperatura y configuración.</p>
+<header class="top"><div class="wrap nav">
+<a class="logo" href="index.html">Android<span>Emu</span></a>
+<nav><a href="index.html#emuladores">Emuladores</a><a href="index.html#juegos">Juegos</a><a href="index.html#guias">Guías</a><a href="compatibilidad.html">Compatibilidad</a></nav>
+</div></header>
+
+<main class="wrap article">
+<a class="back" href="index.html">← Volver a AndroidEmu</a>
+<p class="eyebrow">BASE DE DATOS</p>
+<h1>Compatibilidad de emulación por procesador</h1>
+<p class="lead">Busca tu SoC para consultar CPU, GPU y una estimación orientativa de qué plataformas puedes intentar emular.</p>
+
+<div class="search"><input id="searchCpu" type="search" placeholder="Ej.: Snapdragon 8 Gen 3, 870, Dimensity 8300…" aria-label="Buscar procesador"></div>
+<div id="cpuResults" class="cpu-results"></div>
+<div id="detail" class="result-box" style="display:none"></div>
+
 <div class="ad-slot"><span>ESPACIO PUBLICITARIO</span></div>
-<div class="checker"><label for="cpu"><strong>Selecciona tu procesador</strong></label>
-<select id="cpu" class="select"><option value="">— Elige uno —</option>
-<option value="8g3">Snapdragon 8 Gen 3</option><option value="8g2">Snapdragon 8 Gen 2</option><option value="8g1">Snapdragon 8 Gen 1</option>
-<option value="7g3">Snapdragon 7 Gen 3</option><option value="7g2">Snapdragon 7 Gen 2</option><option value="870">Snapdragon 870</option>
-<option value="778g">Snapdragon 778G</option><option value="g100">MediaTek Helio G100</option><option value="d8300">Dimensity 8300</option><option value="d9200">Dimensity 9200</option>
-</select><div id="result" class="result-box" style="display:none"></div></div>
-<h2>¿Qué significa el resultado?</h2><p>Esta herramienta no garantiza una velocidad concreta. La emulación depende de CPU, GPU, drivers, memoria, versión de Android, emulador y juego.</p>
-<h2>Qué plataformas suelen exigir más</h2><p>Las plataformas antiguas suelen ser menos exigentes. PS2, GameCube, Wii, 3DS y sistemas posteriores pueden requerir más rendimiento y ajustes específicos.</p>
-<h2>Cómo interpretar una prueba</h2><ul><li><strong>Excelente:</strong> buen punto de partida para títulos exigentes.</li><li><strong>Buena:</strong> muchos juegos pueden ser viables, con diferencias por título.</li><li><strong>Media:</strong> conviene priorizar estabilidad y resolución.</li><li><strong>Limitada:</strong> los resultados pueden depender mucho de cada juego.</li></ul>
-<p class="note">AndroidEmu no distribuye ROMs, ISOs ni copias no autorizadas. Usa software y juegos que tengas derecho a utilizar.</p>
+
+<h2>Cómo interpretar las estimaciones</h2>
+<p>“Excelente”, “Buena”, “Media” y “Limitada” son categorías orientativas, no una garantía de FPS. El resultado real puede variar por juego, emulador, versión, drivers de GPU, temperatura, RAM y configuración.</p>
+<h2>Qué factores importan</h2>
+<ul><li><strong>CPU:</strong> afecta especialmente a la velocidad de emulación y a la compilación de instrucciones.</li><li><strong>GPU:</strong> tiene gran importancia cuando se aumenta la resolución o se usan efectos gráficos.</li><li><strong>Drivers:</strong> pueden cambiar compatibilidad y rendimiento.</li><li><strong>Temperatura:</strong> el throttling puede reducir el rendimiento durante sesiones largas.</li><li><strong>El juego:</strong> dos títulos de la misma consola pueden tener resultados muy diferentes.</li></ul>
+<p class="note">AndroidEmu es una guía informativa. No distribuye ROMs, ISOs, BIOS ni copias no autorizadas.</p>
 </main>
+
 <footer><div class="wrap footer"><div><strong>AndroidEmu</strong><p>Información educativa sobre emulación en Android.</p></div><div><a href="privacidad.html">Privacidad</a><a href="contacto.html">Contacto</a></div></div></footer>
+
 <script>
-const data={
-"8g3":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Excelente"},
-"8g2":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Excelente"},
-"8g1":{g:"Muy buena",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Muy buena"},
-"7g3":{g:"Buena",PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena",3DS:"Buena"},
-"7g2":{g:"Buena",PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena",3DS:"Media"},
-"870":{g:"Muy buena",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Buena"},
-"778g":{g:"Media",PS1:"Excelente",PSP:"Excelente",PS2:"Media",GameCube:"Media",Wii:"Media",3DS:"Media"},
-"g100":{g:"Limitada",PS1:"Excelente",PSP:"Buena",PS2:"Limitada",GameCube:"Limitada",Wii:"Limitada",3DS:"Limitada"},
-"d8300":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena",3DS:"Muy buena"},
-"d9200":{g:"Excelente",PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente",3DS:"Muy buena"}};
-const cpu=document.querySelector("#cpu"),result=document.querySelector("#result");
-cpu.addEventListener("change",()=>{const d=data[cpu.value];if(!d){result.style.display="none";return}
-const names=["PS1","PSP","PS2","GameCube","Wii","3DS"];result.style.display="block";
-result.innerHTML='<div class="score">'+d.g+'</div><p>Estimación general para este procesador.</p>'+
-names.map(n=>'<div class="platform"><strong>'+n+'</strong><span class="badge">'+d[n]+'</span></div>').join('')+
-'<p class="note">Estimación orientativa; no representa una garantía de FPS.</p>';});
-</script></body></html>
+const cpus=[
+{name:"Snapdragon 8 Gen 3",aliases:"SM8650",gpu:"Adreno 750",tier:"Entusiasta",note:"SoC de gama alta orientado a cargas exigentes.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Excelente",Switch:"Buena",PC:"Variable"}},
+{name:"Snapdragon 8 Gen 2",aliases:"SM8550-AB",gpu:"Adreno 740",tier:"Entusiasta",note:"Gama alta con amplio margen para emulación pesada.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Excelente",Switch:"Buena",PC:"Variable"}},
+{name:"Snapdragon 8 Gen 1",aliases:"SM8450",gpu:"Adreno 730",tier:"Gama alta",note:"Buen rendimiento, aunque la temperatura puede ser importante.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Muy buena",Switch:"Media",PC:"Variable"}},
+{name:"Snapdragon 870",aliases:"SM8250-AC",gpu:"Adreno 650",tier:"Gama alta anterior",note:"SoC conocido por su buen rendimiento sostenido en muchos dispositivos.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Buena",Switch:"Media",PC:"Variable"}},
+{name:"Snapdragon 778G",aliases:"SM7325",gpu:"Adreno 642L",tier:"Gama media",note:"Adecuado para plataformas antiguas y algunas cargas intermedias.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Media",GameCube:"Media",Wii:"Media","3DS":"Media",Switch:"Limitada",PC:"Limitada"}},
+{name:"Snapdragon 7 Gen 3",aliases:"SM7550-AB",gpu:"Adreno 720",tier:"Gama media-alta",note:"Buen punto de partida para emulación moderada.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena","3DS":"Buena",Switch:"Media",PC:"Limitada"}},
+{name:"Snapdragon 7 Gen 2",aliases:"SM7475",gpu:"Adreno 710",tier:"Gama media-alta",note:"Rendimiento equilibrado para muchas plataformas.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Buena",GameCube:"Buena",Wii:"Buena","3DS":"Media",Switch:"Limitada",PC:"Limitada"}},
+{name:"Dimensity 9200",aliases:"MT6985",gpu:"Immortalis-G715",tier:"Entusiasta",note:"SoC de gama alta con GPU potente.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Excelente",GameCube:"Excelente",Wii:"Excelente","3DS":"Muy buena",Switch:"Buena",PC:"Variable"}},
+{name:"Dimensity 8300",aliases:"MT6897",gpu:"Mali-G615",tier:"Gama alta-media",note:"Alto rendimiento general para emulación exigente.",scores:{PS1:"Excelente",PSP:"Excelente",PS2:"Muy buena",GameCube:"Muy buena",Wii:"Muy buena","3DS":"Muy buena",Switch:"Media",PC:"Variable"}},
+{name:"Helio G100",aliases:"MT6789",gpu:"Mali-G57 MC2",tier:"Gama media",note:"Más orientado a emulación de plataformas ligeras.",scores:{PS1:"Excelente",PSP:"Buena",PS2:"Limitada",GameCube:"Limitada",Wii:"Limitada","3DS":"Limitada",Switch:"Limitada",PC:"Limitada"}}
+];
+
+const names=["PS1","PSP","PS2","GameCube","Wii","3DS","Switch","PC"];
+const results=document.querySelector("#cpuResults"), detail=document.querySelector("#detail"), input=document.querySelector("#searchCpu");
+function render(list){
+ results.innerHTML=list.length?list.map((c,i)=>`<button class="cpu-card" data-i="${cpus.indexOf(c)}"><strong>${c.name}</strong><span>${c.gpu} · ${c.tier}</span></button>`).join(""):"<p class='note'>No encontramos ese procesador. Prueba con otro nombre.</p>";
+ document.querySelectorAll(".cpu-card").forEach(b=>b.onclick=()=>show(cpus[+b.dataset.i]));
+}
+function show(c){
+ detail.style.display="block";
+ detail.innerHTML=`<p class="eyebrow">PROCESADOR</p><h2>${c.name}</h2><p><strong>Modelo:</strong> ${c.aliases}</p><p><strong>GPU:</strong> ${c.gpu}</p><p><strong>Nivel:</strong> ${c.tier}</p><p>${c.note}</p><h3>Compatibilidad orientativa</h3>${names.map(n=>`<div class="platform"><strong>${n}</strong><span class="badge">${c.scores[n]}</span></div>`).join("")}<p class="note">Esta ficha no sustituye una prueba del juego concreto.</p>`;
+}
+input.addEventListener("input",()=>{const q=input.value.toLowerCase().trim();render(cpus.filter(c=>(c.name+" "+c.aliases+" "+c.gpu).toLowerCase().includes(q)));});
+render(cpus);
+</script>
+</body>
+</html>
